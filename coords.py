@@ -28,3 +28,7 @@ class Coords3D:
 
     def __repr__(self):
         return f"{type(self).__name__}(x={self.x}, y={self.y}, z={self.z})"
+
+    def __eq__(self, other):
+        assert isinstance(other, type(self))
+        return self.x == other.x and self.y == other.y and self.z == other.z

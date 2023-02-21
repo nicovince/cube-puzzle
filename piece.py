@@ -25,6 +25,10 @@ class Block:
         bb_end = Coords3D(2, 2, 2)
         return self.pos.is_within(bb_start, bb_end)
 
+    def collides(self, other):
+        """Check wether two blocks collides"""
+        return self.pos == other.pos
+
 
 class Beam:
     """Beam holding Block together."""
@@ -94,6 +98,17 @@ class Piece:
             if not out:
                 return out
         return out
+
+    def collides(self, other):
+        """Check wether two pieces collides."""
+        collision = False
+        for blk in self.blocks:
+            for o_blk in other.blocks:
+                collision = collision or blk.collides(o_blk)
+                if collision:
+                    return collision
+        # TODO: check beams collisions
+        return collision
 
 
 def get_pieces():
@@ -179,6 +194,9 @@ def main():
     pieces = get_pieces()
     for piece in pieces:
         print(piece)
+
+    print(f"{pieces[1]} and {pieces[2]} collides: {pieces[0].collides(pieces[1])}")
+
 
 if __name__ == "__main__":
     main()
