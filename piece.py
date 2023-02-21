@@ -3,14 +3,15 @@
 import logging
 from coords import Coords3D
 
+
 class Block:
     """Single Cube Block representation."""
+
     def __init__(self, pos):
         assert isinstance(pos, Coords3D)
         self.pos = pos
         if not self.is_valid():
             logging.warning("Invalid position %s", self)
-
 
     def __repr__(self):
         return f"{type(self).__name__}(pos={self.pos!r})"
@@ -24,8 +25,10 @@ class Block:
         bb_end = Coords3D(2, 2, 2)
         return self.pos.is_within(bb_start, bb_end)
 
+
 class Beam:
     """Beam holding Block together."""
+
     def __init__(self, start, vect):
         assert isinstance(start, Coords3D)
         self.start = start
@@ -46,8 +49,10 @@ class Beam:
     def __repr__(self):
         return f"{type(self).__name__}(start={self.start!r}, vect={self.vect!r})"
 
+
 class Piece:
     """Collection of Beams and Blocks."""
+
     def __init__(self, blocks, beams):
         assert isinstance(blocks, list)
         assert isinstance(beams, list)
@@ -77,7 +82,6 @@ class Piece:
             out += "\n"
         return out
 
-
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
         out = True
@@ -99,6 +103,7 @@ def main():
                     Beam(Coords3D(1, 1, 0), Coords3D(1, 0, 3))])
     print(piece1)
     print(piece1.blocks[0])
+
 
 if __name__ == "__main__":
     main()

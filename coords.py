@@ -1,7 +1,9 @@
 """Handle coordinates."""
 
+
 class Coords3D:
     """Handle 3D coordinates."""
+
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
