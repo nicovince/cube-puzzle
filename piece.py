@@ -96,14 +96,89 @@ class Piece:
         return out
 
 
-def main():
-    """Main function."""
+def get_pieces():
+    """Return list of pieces in cube puzzle."""
+    pieces = []
     piece1 = Piece([Block(Coords3D(1, 0, 0)), Block(Coords3D(1, 0, 1)), Block(Coords3D(2, 0, 1))],
                    [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
                     Beam(Coords3D(1, 1, 0), Coords3D(1, 0, 3))])
-    print(piece1)
-    print(piece1.blocks[0])
+    pieces.append(piece1)
 
+    piece2 = Piece([Block(Coords3D(0, 0, 0)),
+                    Block(Coords3D(0, 0, 1)),
+                    Block(Coords3D(2, 0, 0)),
+                    Block(Coords3D(2, 0, 1)),
+                   ],
+                   [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
+                    Beam(Coords3D(1, 0, 1), Coords3D(0, 1, 1)),
+                    Beam(Coords3D(0, 1, 0), Coords3D(1, 0, 3)),
+                   ])
+    pieces.append(piece2)
+
+    piece3 = Piece([Block(Coords3D(1, 0, 0)),
+                    Block(Coords3D(2, 1, 0)),
+                    Block(Coords3D(0, 0, 2)),
+                    Block(Coords3D(1, 0, 2)),
+                   ],
+                   [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
+                    Beam(Coords3D(0, 1, 0), Coords3D(3, 0, 1)),
+                   ])
+    pieces.append(piece3)
+
+    piece4 = Piece([Block(Coords3D(1, 0, 0)),
+                    Block(Coords3D(0, 0, 2)),
+                   ],
+                   [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
+                    Beam(Coords3D(0, 1, 2), Coords3D(3, 0, 1)),
+                   ])
+    pieces.append(piece4)
+
+    piece5 = Piece([Block(Coords3D(0, 0, 0)),
+                    Block(Coords3D(1, 0, 0)),
+                    Block(Coords3D(2, 1, 0)),
+                    Block(Coords3D(1, 0, 2)),
+                   ],
+                   [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
+                    Beam(Coords3D(0, 1, 1), Coords3D(3, 0, 1)),
+                   ])
+    pieces.append(piece5)
+
+    piece6 = Piece([Block(Coords3D(0, 1, 0)),
+                    Block(Coords3D(2, 1, 0)),
+                    Block(Coords3D(0, 0, 1)),
+                   ],
+                   [Beam(Coords3D(0, 1, 0), Coords3D(3, 0, 1)),
+                    Beam(Coords3D(0, 0, 1), Coords3D(1, 3, 0)),
+                   ])
+    pieces.append(piece6)
+
+    piece7 = Piece([Block(Coords3D(0, 0, 0)),
+                    Block(Coords3D(2, 0, 0)),
+                    Block(Coords3D(2, 0, 1)),
+                    Block(Coords3D(2, 1, 2)),
+                   ],
+                   [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
+                    Beam(Coords3D(2, 0, 1), Coords3D(0, 1, 1)),
+                    Beam(Coords3D(2, 1, 0), Coords3D(1, 0, 3)),
+                   ])
+    pieces.append(piece7)
+
+    piece8 = Piece([Block(Coords3D(0, 0, 0)),
+                    Block(Coords3D(0, 1, 0)),
+                   ],
+                   [Beam(Coords3D(1, 0, 0), Coords3D(0, 3, 1)),
+                    Beam(Coords3D(0, 1, 0), Coords3D(1, 0, 3)),
+                    Beam(Coords3D(0, 1, 1), Coords3D(3, 1, 0)),
+                   ])
+    pieces.append(piece8)
+    return pieces
+
+
+def main():
+    """Main function."""
+    pieces = get_pieces()
+    for piece in pieces:
+        print(piece)
 
 if __name__ == "__main__":
     main()
