@@ -29,12 +29,25 @@ class Block:
         """Check wether two blocks collides"""
         return self.pos == other.pos
 
+    def rot90_x(self):
+        """Rotation 90 degree around x axis."""
+        self.pos.rot90_x()
+
+    def rot90_y(self):
+        """Rotation 90 degree around y axis."""
+        self.pos.rot90_y()
+
+    def rot90_z(self):
+        """Rotation 90 degree around z axis."""
+        self.pos.rot90_z()
+
 
 class Beam:
     """Beam holding Block together."""
 
     def __init__(self, start, vect):
         assert isinstance(start, Coords3D)
+        assert isinstance(vect, Coords3D)
         self.start = start
         self.end = start.add(vect)
         self.vect = vect
@@ -46,6 +59,24 @@ class Beam:
         bb_start = Coords3D(0, 0, 0)
         bb_end = Coords3D(3, 3, 3)
         return self.start.is_within(bb_start, bb_end) and self.end.is_within(bb_start, bb_end)
+
+    def rot90_x(self):
+        """Rotation 90 degree around x axis."""
+        self.start.rot90_x()
+        self.end.rot90_x()
+        self.vect.rot90_x()
+
+    def rot90_y(self):
+        """Rotation 90 degree around y axis."""
+        self.start.rot90_y()
+        self.end.rot90_y()
+        self.vect.rot90_y()
+
+    def rot90_z(self):
+        """Rotation 90 degree around z axis."""
+        self.start.rot90_z()
+        self.end.rot90_z()
+        self.vect.rot90_z()
 
     def __str__(self):
         return f"start: {self.start} vect:{self.vect}"
@@ -107,9 +138,28 @@ class Piece:
                 collision = collision or blk.collides(o_blk)
                 if collision:
                     return collision
-        # TODO: check beams collisions
         return collision
 
+    def rot90_x(self):
+        """Rotation 90 degree around x axis."""
+        for blk in self.blocks:
+            blk.rot90_x()
+        for beam in self.beams:
+            beam.rot90_x()
+
+    def rot90_y(self):
+        """Rotation 90 degree around y axis."""
+        for blk in self.blocks:
+            blk.rot90_y()
+        for beam in self.beams:
+            beam.rot90_y()
+
+    def rot90_z(self):
+        """Rotation 90 degree around z axis."""
+        for blk in self.blocks:
+            blk.rot90_z()
+        for beam in self.beams:
+            beam.rot90_z()
 
 def get_pieces():
     """Return list of pieces in cube puzzle."""
@@ -196,6 +246,10 @@ def main():
         print(piece)
 
     print(f"{pieces[1]} and {pieces[2]} collides: {pieces[0].collides(pieces[1])}")
+
+    print(f"{pieces[1]} rot90_x:")
+    pieces[1].rot90_x()
+    print(f"{pieces[1]}")
 
 
 if __name__ == "__main__":

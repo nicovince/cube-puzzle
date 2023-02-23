@@ -32,3 +32,37 @@ class Coords3D:
     def __eq__(self, other):
         assert isinstance(other, type(self))
         return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def rot90_x(self):
+        """Rotation 90 degree around x axis."""
+        x = self.x
+        y = self.y
+        z = self.z
+        self.x = x
+        self.y = -z
+        self.z = y
+
+    def rot90_y(self):
+        """Rotation 90 degree around y axis."""
+        x = self.x
+        y = self.y
+        z = self.z
+        self.x = z
+        self.y = y
+        self.z = -x
+
+    def rot90_z(self):
+        """Rotation 90 degree around z axis."""
+        x = self.x
+        y = self.y
+        z = self.z
+        self.x = -y
+        self.y = x
+        self.z = z
+
+    def translate(self, vect):
+        """Translation from vect."""
+        assert isinstance(vect, type(self))
+        self.x += vect.x
+        self.y += vect.y
+        self.z += vect.z
