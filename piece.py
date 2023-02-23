@@ -4,6 +4,23 @@ import logging
 from coords import Coords3D
 
 
+def combine_bb_vects(old, new):
+    """Combine two vector to move blocks into bounding box."""
+    old_coords = [old.x, old.y, old.z]
+    new_coords = [new.x, new.y, new.z]
+    comb = []
+    for old_coord, new_coord in zip(old_coords, new_coords):
+        if old_coord == 0:
+            comb.append(new_coord)
+        elif old_coord < 0:
+            assert new_coord <= 0
+            comb.append(min(old_coord, new_coord))
+        elif old_coord > 0:
+            assert new_coord >= 0
+            comb.append(max(old_coord, new_coord))
+    return Coords3D(comb[0], comb[1], comb[2])
+
+
 class Block:
     """Single Cube Block representation."""
 
@@ -41,6 +58,10 @@ class Block:
         """Rotation 90 degree around z axis."""
         self.pos.rot90_z()
 
+    def get_bb_vect(self):
+        """Get vector to move block inside 3x3x3 bounding box."""
+        return self.pos.get_bb_vect()
+
 
 class Beam:
     """Beam holding Block together."""
@@ -77,6 +98,12 @@ class Beam:
         self.start.rot90_z()
         self.end.rot90_z()
         self.vect.rot90_z()
+
+    def get_bb_vect(self):
+        """Get vector to move beam inside 3x3x3 bounding box."""
+        v_start = self.start.get_bb_vect(4)
+        v_end = self.end.get_bb_vect(4)
+        return combine_bb_vects(v_start, v_end)
 
     def __str__(self):
         return f"start: {self.start} vect:{self.vect}"
@@ -160,6 +187,21 @@ class Piece:
             blk.rot90_z()
         for beam in self.beams:
             beam.rot90_z()
+
+    def get_bb_vect(self):
+        """Get vector to move blocks inside 3x3x3 bounding box."""
+        vect = Coords3D(0, 0, 0)
+        for blk in self.blocks:
+            new_vect = blk.get_bb_vect()
+            comb_vect = combine_bb_vects(vect, new_vect)
+            vect = comb_vect
+
+        for beam in self.beams:
+            new_vect = beam.get_bb_vect()
+            comb_vect = combine_bb_vects(vect, new_vect)
+            vect = comb_vect
+        return vect
+
 
 def get_pieces():
     """Return list of pieces in cube puzzle."""
@@ -250,6 +292,7 @@ def main():
     print(f"{pieces[1]} rot90_x:")
     pieces[1].rot90_x()
     print(f"{pieces[1]}")
+    print(f"vector to move piece into 3x3x3: {pieces[1].get_bb_vect()}")
 
 
 if __name__ == "__main__":

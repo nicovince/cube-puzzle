@@ -66,3 +66,16 @@ class Coords3D:
         self.x += vect.x
         self.y += vect.y
         self.z += vect.z
+
+    def get_bb_vect(self, bb_len=3):
+        """Return vector to move coord inside square bounding box of side bb_len."""
+        coords = [self.x, self.y, self.z]
+        vect = []
+        for scalar in coords:
+            if scalar < 0:
+                vect.append(-scalar)
+            elif scalar >= bb_len:
+                vect.append(bb_len - scalar)
+            else:
+                vect.append(0)
+        return Coords3D(vect[0], vect[1], vect[2])
