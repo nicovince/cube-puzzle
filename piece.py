@@ -21,12 +21,50 @@ def combine_bb_vects(old, new):
     return Coords3D(comb[0], comb[1], comb[2])
 
 
+def block_coord_to_grid5(pos):
+    """Change scalar coord of block from [0:2] to [0:4].
+
+    Beams become 1 wide thick.
+    """
+    if pos == 0:
+        return pos
+    if pos == 1:
+        return pos + 1
+    if pos == 2:
+        return pos + 2
+    assert False, f"Invalid position value {pos}"
+
+
+def beam_coord_to_grid5(pos):
+    """Change scalar coord of beam from [0:2] to [0:4]
+
+    Beams become 1 wide thick.
+    """
+    if pos == 0:
+        return pos
+    if pos == 1:
+        return pos
+    if pos == 2:
+        return pos + 1
+    if pos == 3:
+        return pos + 2
+    assert False, f"Invalid beam pos {pos}"
+
+
+def beam_to_grid5(coords3d):
+    """Change Beam coords to grid 5 representation."""
+    return Coords3D(beam_coord_to_grid5(coords3d.x),
+                    beam_coord_to_grid5(coords3d.y),
+                    beam_coord_to_grid5(coords3d.z))
+
+
 class Block:
     """Single Cube Block representation."""
 
-    def __init__(self, pos):
+    def __init__(self, pos, grid_5=False):
         assert isinstance(pos, Coords3D)
         self.pos = pos
+        self.grid_5 = grid_5
         if not self.is_valid():
             logging.warning("Invalid position %s", self)
 
@@ -36,10 +74,20 @@ class Block:
     def __str__(self):
         return f"block at {self.pos}"
 
+    def to_grid_5(self):
+        """Change block representation in a 3x3x3 to 5x5x5."""
+        blk = Coords3D(block_coord_to_grid5(self.pos.x),
+                       block_coord_to_grid5(self.pos.y),
+                       block_coord_to_grid5(self.pos.z))
+        return Block(blk)
+
     def is_valid(self):
         """Check wether the block is in a valid position."""
         bb_start = Coords3D(0, 0, 0)
-        bb_end = Coords3D(2, 2, 2)
+        if self.grid_5:
+            bb_end = Coords3D(2, 2, 2)
+        else:
+            bb_end = Coords3D(4, 4, 4)
         return self.pos.is_within(bb_start, bb_end)
 
     def collides(self, other):
@@ -74,6 +122,21 @@ class Beam:
         self.vect = vect
         if not self.is_valid():
             logging.warning("Invalid beam %s", self)
+
+    def to_grid_5(self):
+        """Change Beam reprensetation in a 3x3x3 to blocks in a 5x5x5."""
+        blocks = []
+        start = beam_to_grid5(self.start)
+        vect = beam_to_grid5(self.vect)
+        print(f"{self.start} becomes {start}")
+        for x in range(max(1, vect.x)):
+            for y in range(max(1, vect.y)):
+                for z in range(max(1, vect.z)):
+                    blocks.append(Coords3D(start.x + x,
+                                           start.y + y,
+                                           start.z + z))
+        return blocks
+
 
     def is_valid(self):
         """Check wether the beam is in a valid position."""
@@ -143,6 +206,9 @@ class Piece:
             out += str(beam)
             out += "\n"
         return out
+
+    def to_grid_5(self):
+        """Change piece to grid5"""
 
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
@@ -293,6 +359,10 @@ def main():
     pieces[1].rot90_x()
     print(f"{pieces[1]}")
     print(f"vector to move piece into 3x3x3: {pieces[1].get_bb_vect()}")
+
+    print("Change Piece 0 to blocks5 representation")
+    print(f"{pieces[0].beams[0]} -> {pieces[0].beams[0].to_grid_5()}")
+    print(f"{pieces[0].blocks[0]} -> {pieces[0].blocks[0].to_grid_5()}")
 
 
 if __name__ == "__main__":
