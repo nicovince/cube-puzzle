@@ -69,7 +69,12 @@ class Block:
             logging.warning("Invalid position %s", self)
 
     def __repr__(self):
-        return f"{type(self).__name__}(pos={self.pos!r})"
+        out = f"{type(self).__name__}(pos={self.pos!r}"
+        if self.grid_5:
+            out += ", grid_5=True"
+        out += ")"
+        return out
+
 
     def __str__(self):
         return f"block at {self.pos}"
@@ -108,7 +113,11 @@ class Block:
 
     def get_bb_vect(self):
         """Get vector to move block inside 3x3x3 bounding box."""
-        return self.pos.get_bb_vect()
+        if self.grid_5:
+            bb_len = 3
+        else:
+            bb_len = 5
+        return self.pos.get_bb_vect(bb_len)
 
 
 class Beam:
