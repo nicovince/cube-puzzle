@@ -128,7 +128,6 @@ class Beam:
         blocks = []
         start = beam_to_grid5(self.start)
         vect = beam_to_grid5(self.vect)
-        print(f"{self.start} becomes {start}")
         for x in range(max(1, vect.x)):
             for y in range(max(1, vect.y)):
                 for z in range(max(1, vect.z)):
@@ -180,13 +179,11 @@ class Piece5:
         assert isinstance(beams, list)
 
         for blk in blocks:
-            print(blk)
             assert isinstance(blk, Block)
 
         for beam in beams:
             assert isinstance(beam, list)
             for beam_blk in beam:
-                print(beam_blk)
                 assert isinstance(beam_blk, Block)
 
         self.blocks = blocks
@@ -207,6 +204,31 @@ class Piece5:
             out += str(beam)
             out += "\n"
         return out
+
+    def is_valid(self):
+        """Check wether the current positions of blocks and beams are valid."""
+        for blk in self.blocks:
+            if not blk.is_valid():
+                return False
+        for beam in self.beams:
+            for blk in beam:
+                if not blk.is_valid():
+                    return False
+        return True
+
+    def collides(self, other):
+        """Check wether two pieces collides."""
+        for blk in self.blocks:
+            for o_blk in other.blocks:
+                if blk.collides(o_blk):
+                    return True
+        beams_blks = [blk for beam in self.beams for blk in beam]
+        o_beams_blks = [blk for beam in other.beams for blk in beam]
+        for blk_beam in beams_blks:
+            for o_blk_beam in o_beams_blks:
+                if blk_beam.collides(o_blk_beam):
+                    return True
+        return False
 
 
 class Piece:
@@ -390,19 +412,10 @@ def main():
     for piece in pieces:
         print(piece)
 
-    print(f"{pieces[1]} and {pieces[2]} collides: {pieces[0].collides(pieces[1])}")
+    pieces5 = [p.to_grid_5() for p in pieces]
 
-    print(f"{pieces[1]} rot90_x:")
-    pieces[1].rot90_x()
-    print(f"{pieces[1]}")
-    print(f"vector to move piece into 3x3x3: {pieces[1].get_bb_vect()}")
-
-    print("Change Piece 0 to blocks5 representation")
-    print(f"{pieces[0].beams[0]} -> {pieces[0].beams[0].to_grid_5()}")
-    print(f"{pieces[0].blocks[0]} -> {pieces[0].blocks[0].to_grid_5()}")
-
-    print(f"{pieces[0]}")
-    print(f"{pieces[0].to_grid_5()}")
+    for piece in pieces5:
+        print(piece)
 
 
 if __name__ == "__main__":
