@@ -114,9 +114,9 @@ class Block:
     def get_bb_vect(self):
         """Get vector to move block inside 3x3x3 bounding box."""
         if self.grid_5:
-            bb_len = 3
-        else:
             bb_len = 5
+        else:
+            bb_len = 3
         return self.pos.get_bb_vect(bb_len)
 
 
@@ -238,6 +238,45 @@ class Piece5:
                 if blk_beam.collides(o_blk_beam):
                     return True
         return False
+
+    def rot90_x(self):
+        """Rotation 90 degree around x axis."""
+        for blk in self.blocks:
+            blk.rot90_x()
+        for beam in self.beams:
+            for blk in beam:
+                blk.rot90_x()
+
+    def rot90_y(self):
+        """Rotation 90 degree around y axis."""
+        for blk in self.blocks:
+            blk.rot90_y()
+        for beam in self.beams:
+            for blk in beam:
+                blk.rot90_y()
+
+    def rot90_z(self):
+        """Rotation 90 degree around z axis."""
+        for blk in self.blocks:
+            blk.rot90_z()
+        for beam in self.beams:
+            for blk in beam:
+                blk.rot90_z()
+
+    def get_bb_vect(self):
+        """Get vector to move blocks inside 5x5x5 bounding box."""
+        vect = Coords3D(0, 0, 0)
+        for blk in self.blocks:
+            new_vect = blk.get_bb_vect()
+            comb_vect = combine_bb_vects(vect, new_vect)
+            vect = comb_vect
+
+        beams_blks = [blk for beam in self.beams for blk in beam]
+        for beam in beams_blks:
+            new_vect = beam.get_bb_vect()
+            comb_vect = combine_bb_vects(vect, new_vect)
+            vect = comb_vect
+        return vect
 
 
 class Piece:
@@ -426,6 +465,10 @@ def main():
     for piece in pieces5:
         print(piece)
 
+    print(f"P0: {pieces5[0]}")
+    pieces5[0].rot90_x()
+    print(f"P0 rot90: {pieces5[0]}")
+    print(f"Vector : {pieces5[0].get_bb_vect()}")
 
 if __name__ == "__main__":
     main()
