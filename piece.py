@@ -79,12 +79,12 @@ class Block:
         blk = Coords3D(block_coord_to_grid5(self.pos.x),
                        block_coord_to_grid5(self.pos.y),
                        block_coord_to_grid5(self.pos.z))
-        return Block(blk)
+        return Block(blk, True)
 
     def is_valid(self):
         """Check wether the block is in a valid position."""
         bb_start = Coords3D(0, 0, 0)
-        if self.grid_5:
+        if not self.grid_5:
             bb_end = Coords3D(2, 2, 2)
         else:
             bb_end = Coords3D(4, 4, 4)
@@ -132,9 +132,7 @@ class Beam:
         for x in range(max(1, vect.x)):
             for y in range(max(1, vect.y)):
                 for z in range(max(1, vect.z)):
-                    blocks.append(Coords3D(start.x + x,
-                                           start.y + y,
-                                           start.z + z))
+                    blocks.append(Block(Coords3D(start.x + x, start.y + y, start.z + z), True))
         return blocks
 
 
@@ -175,6 +173,42 @@ class Beam:
         return f"{type(self).__name__}(start={self.start!r}, vect={self.vect!r})"
 
 
+class Piece5:
+    """Piece in a 5x5x5 representation."""
+    def __init__(self, blocks, beams):
+        assert isinstance(blocks, list)
+        assert isinstance(beams, list)
+
+        for blk in blocks:
+            print(blk)
+            assert isinstance(blk, Block)
+
+        for beam in beams:
+            assert isinstance(beam, list)
+            for beam_blk in beam:
+                print(beam_blk)
+                assert isinstance(beam_blk, Block)
+
+        self.blocks = blocks
+        self.beams = beams
+
+    def __repr__(self):
+        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams})"
+
+    def __str__(self):
+        out = "Blocks:\n"
+        for blk in self.blocks:
+            out += " - "
+            out += str(blk)
+            out += "\n"
+        out += "Beams:\n"
+        for beam in self.beams:
+            out += " - "
+            out += str(beam)
+            out += "\n"
+        return out
+
+
 class Piece:
     """Collection of Beams and Blocks."""
 
@@ -209,6 +243,9 @@ class Piece:
 
     def to_grid_5(self):
         """Change piece to grid5"""
+        beams = [beam.to_grid_5() for beam in self.beams]
+        blocks = [blk.to_grid_5() for blk in self.blocks]
+        return Piece5(blocks, beams)
 
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
@@ -363,6 +400,9 @@ def main():
     print("Change Piece 0 to blocks5 representation")
     print(f"{pieces[0].beams[0]} -> {pieces[0].beams[0].to_grid_5()}")
     print(f"{pieces[0].blocks[0]} -> {pieces[0].blocks[0].to_grid_5()}")
+
+    print(f"{pieces[0]}")
+    print(f"{pieces[0].to_grid_5()}")
 
 
 if __name__ == "__main__":
