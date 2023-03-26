@@ -185,7 +185,7 @@ class Beam:
 
 class Piece5:
     """Piece in a 5x5x5 representation."""
-    def __init__(self, blocks, beams):
+    def __init__(self, blocks, beams, name=None):
         assert isinstance(blocks, list)
         assert isinstance(beams, list)
 
@@ -199,19 +199,21 @@ class Piece5:
 
         self.blocks = blocks
         self.beams = beams
+        self.name = name
 
     def __repr__(self):
-        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams})"
+        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name={self.name})"
 
     def __str__(self):
-        out = "Blocks:\n"
+        out = f"{self.name}\n"
+        out += " Blocks:\n"
         for blk in self.blocks:
-            out += " - "
+            out += "  - "
             out += str(blk)
             out += "\n"
-        out += "Beams:\n"
+        out += " Beams:\n"
         for beam in self.beams:
-            out += " - "
+            out += "  - "
             out += str(beam)
             out += "\n"
         return out
@@ -284,7 +286,7 @@ class Piece5:
 class Piece:
     """Collection of Beams and Blocks."""
 
-    def __init__(self, blocks, beams):
+    def __init__(self, blocks, beams, name=None):
         assert isinstance(blocks, list)
         assert isinstance(beams, list)
 
@@ -296,19 +298,21 @@ class Piece:
 
         self.blocks = blocks
         self.beams = beams
+        self.name = name
 
     def __repr__(self):
-        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams})"
+        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name={self.name})"
 
     def __str__(self):
-        out = "Blocks:\n"
+        out = f"{self.name}\n"
+        out += " Blocks:\n"
         for blk in self.blocks:
-            out += " - "
+            out += "  - "
             out += str(blk)
             out += "\n"
-        out += "Beams:\n"
+        out += " Beams:\n"
         for beam in self.beams:
-            out += " - "
+            out += "  - "
             out += str(beam)
             out += "\n"
         return out
@@ -317,7 +321,7 @@ class Piece:
         """Change piece to grid5"""
         beams = [beam.to_grid_5() for beam in self.beams]
         blocks = [blk.to_grid_5() for blk in self.blocks]
-        return Piece5(blocks, beams)
+        return Piece5(blocks, beams, self.name)
 
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
@@ -383,7 +387,8 @@ def get_pieces():
     pieces = []
     piece1 = Piece([Block(Coords3D(1, 0, 0)), Block(Coords3D(1, 0, 1)), Block(Coords3D(2, 0, 1))],
                    [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
-                    Beam(Coords3D(1, 1, 0), Coords3D(1, 0, 3))])
+                    Beam(Coords3D(1, 1, 0), Coords3D(1, 0, 3))],
+                   "P1")
     pieces.append(piece1)
 
     piece2 = Piece([Block(Coords3D(0, 0, 0)),
@@ -394,7 +399,8 @@ def get_pieces():
                    [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
                     Beam(Coords3D(1, 0, 1), Coords3D(0, 1, 1)),
                     Beam(Coords3D(0, 1, 0), Coords3D(1, 0, 3)),
-                   ])
+                   ],
+                   "P2")
     pieces.append(piece2)
 
     piece3 = Piece([Block(Coords3D(1, 0, 0)),
@@ -404,7 +410,8 @@ def get_pieces():
                    ],
                    [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
                     Beam(Coords3D(0, 1, 0), Coords3D(3, 0, 1)),
-                   ])
+                   ],
+                   "P3")
     pieces.append(piece3)
 
     piece4 = Piece([Block(Coords3D(1, 0, 0)),
@@ -412,7 +419,8 @@ def get_pieces():
                    ],
                    [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
                     Beam(Coords3D(0, 1, 2), Coords3D(3, 0, 1)),
-                   ])
+                   ],
+                   "P4")
     pieces.append(piece4)
 
     piece5 = Piece([Block(Coords3D(0, 0, 0)),
@@ -422,7 +430,8 @@ def get_pieces():
                    ],
                    [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
                     Beam(Coords3D(0, 1, 1), Coords3D(3, 0, 1)),
-                   ])
+                   ],
+                   "P5")
     pieces.append(piece5)
 
     piece6 = Piece([Block(Coords3D(0, 1, 0)),
@@ -431,7 +440,8 @@ def get_pieces():
                    ],
                    [Beam(Coords3D(0, 1, 0), Coords3D(3, 0, 1)),
                     Beam(Coords3D(0, 0, 1), Coords3D(1, 3, 0)),
-                   ])
+                   ],
+                   "P6")
     pieces.append(piece6)
 
     piece7 = Piece([Block(Coords3D(0, 0, 0)),
@@ -442,7 +452,8 @@ def get_pieces():
                    [Beam(Coords3D(0, 0, 1), Coords3D(3, 1, 0)),
                     Beam(Coords3D(2, 0, 1), Coords3D(0, 1, 1)),
                     Beam(Coords3D(2, 1, 0), Coords3D(1, 0, 3)),
-                   ])
+                   ],
+                   "P7")
     pieces.append(piece7)
 
     piece8 = Piece([Block(Coords3D(0, 0, 0)),
@@ -451,7 +462,8 @@ def get_pieces():
                    [Beam(Coords3D(1, 0, 0), Coords3D(0, 3, 1)),
                     Beam(Coords3D(0, 1, 0), Coords3D(1, 0, 3)),
                     Beam(Coords3D(0, 1, 1), Coords3D(3, 1, 0)),
-                   ])
+                   ],
+                   "P8")
     pieces.append(piece8)
     return pieces
 
@@ -467,9 +479,9 @@ def main():
     for piece in pieces5:
         print(piece)
 
-    print(f"P0: {pieces5[0]}")
+    print(f"{pieces5[0]}")
     pieces5[0].rot90_x()
-    print(f"P0 rot90: {pieces5[0]}")
+    print(f"P5 rot90: {pieces5[0]}")
     print(f"Vector : {pieces5[0].get_bb_vect()}")
 
 if __name__ == "__main__":
