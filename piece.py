@@ -33,6 +33,7 @@ def block_coord_to_grid5(pos):
     if pos == 2:
         return pos + 2
     assert False, f"Invalid position value {pos}"
+    return None
 
 
 def beam_coord_to_grid5(pos):
@@ -49,6 +50,7 @@ def beam_coord_to_grid5(pos):
     if pos == 3:
         return pos + 2
     assert False, f"Invalid beam pos {pos}"
+    return None
 
 
 def beam_to_grid5(coords3d):
