@@ -214,7 +214,12 @@ class Piece5:
         out += " Beams:\n"
         for beam in self.beams:
             out += "  - "
-            out += str(beam)
+            pad = False
+            for blk in beam:
+                if pad:
+                    out += "    "
+                out += f" {blk}\n"
+                pad = True
             out += "\n"
         return out
 
@@ -281,6 +286,25 @@ class Piece5:
             comb_vect = combine_bb_vects(vect, new_vect)
             vect = comb_vect
         return vect
+
+    def translate(self, vect):
+        """Translate Piece with vector movement."""
+        for blk in self.blocks:
+            blk.pos.translate(vect)
+
+        beams_blks = [blk for beam in self.beams for blk in beam]
+        for beam_blk in beams_blks:
+            beam_blk.pos.translate(vect)
+
+    def move_start_pos(self):
+        """Move Piece as close as possible to the origin."""
+        blocks = self.blocks + [blk for beam in self.beams for blk in beam]
+        (x, y, z) = (2000, 2000, 2000)
+        for blk in blocks:
+            x = min(x, blk.pos.x)
+            y = min(y, blk.pos.y)
+            z = min(z, blk.pos.z)
+        self.translate(Coords3D(-x, -y, -z))
 
 
 class Piece:
@@ -471,18 +495,21 @@ def get_pieces():
 def main():
     """Main function."""
     pieces = get_pieces()
-    for piece in pieces:
-        print(piece)
+    #for piece in pieces:
+    #    print(piece)
 
     pieces5 = [p.to_grid_5() for p in pieces]
 
     for piece in pieces5:
+        print("origin")
+        print(piece)
+        print("rotate")
+        piece.rot90_x()
+        print(piece)
+        print("move to start pos")
+        piece.move_start_pos()
         print(piece)
 
-    print(f"{pieces5[0]}")
-    pieces5[0].rot90_x()
-    print(f"P5 rot90: {pieces5[0]}")
-    print(f"Vector : {pieces5[0].get_bb_vect()}")
 
 if __name__ == "__main__":
     main()
