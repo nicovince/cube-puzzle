@@ -14,9 +14,3 @@ repos:
   hooks:
     - id: gitlint
       stages: [commit-msg]
-
-- repo: https://github.com/PyCQA/pylint
-  rev: v2.16.2
-  hooks:
-    - id: pylint
-      stages: [commit]
