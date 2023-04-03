@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Handle Pieces, blocks and beams"""
 import logging
+import copy
 from coords import Coords3D
 
 
@@ -296,15 +297,33 @@ class Piece5:
         for beam_blk in beams_blks:
             beam_blk.pos.translate(vect)
 
-    def move_start_pos(self):
-        """Move Piece as close as possible to the origin."""
+    def rotate(self, rot_cnt):
+        """Apply requested number of rotaions on each axis."""
+        for _ in range(rot_cnt[0]):
+            self.rot90_x()
+        for _ in range(rot_cnt[1]):
+            self.rot90_y()
+        for _ in range(rot_cnt[2]):
+            self.rot90_z()
+
+    def movement(self, trans, rot):
+        """Apply rotation and translation."""
+        self.rotate(rot)
+        self.translate(trans)
+
+    def get_movement_to_start_pos(self):
+        """Get vector to move piece as close as possible to the origin."""
         blocks = self.blocks + [blk for beam in self.beams for blk in beam]
         (x, y, z) = (2000, 2000, 2000)
         for blk in blocks:
             x = min(x, blk.pos.x)
             y = min(y, blk.pos.y)
             z = min(z, blk.pos.z)
-        self.translate(Coords3D(-x, -y, -z))
+        return Coords3D(-x, -y, -z)
+
+    def move_start_pos(self):
+        """Move Piece as close as possible to the origin."""
+        self.translate(self.get_movement_to_start_pos())
 
 
 class Piece:
@@ -406,6 +425,91 @@ class Piece:
         return vect
 
 
+class PiecePositions:
+    """Iterator for Piece Positions."""
+    def __init__(self, piece):
+        self.piece = copy.deepcopy(piece)
+        self.rot_state = (0, 0, 0)
+        self.trans_state = Coords3D(0, 0, 0)
+
+    def __iter__(self):
+        self.piece.move_start_pos()
+        self.rot_state = (0, 0, 0)
+        self.trans_state = Coords3D(0, 0, 0)
+        return self
+
+    def search_next(self):
+        """Search next rotation/translation state."""
+        tmp = copy.deepcopy(self.piece)
+        next_trans = self.trans_state
+        next_rot = self.rot_state
+
+        # X translation
+        next_trans = next_trans.add(Coords3D(1, 0, 0))
+        tmp.movement(next_trans, next_rot)
+        if tmp.is_valid():
+            return (next_trans, next_rot)
+
+        # Y translation
+        tmp = copy.deepcopy(self.piece)
+        next_trans.x = 0
+        next_trans = next_trans.add(Coords3D(0, 1, 0))
+        tmp.movement(next_trans, next_rot)
+        if tmp.is_valid():
+            return (next_trans, next_rot)
+
+        # Z translation
+        tmp = copy.deepcopy(self.piece)
+        next_trans.y = 0
+        next_trans = next_trans.add(Coords3D(0, 0, 1))
+        tmp.movement(next_trans, next_rot)
+        if tmp.is_valid():
+            return (next_trans, next_rot)
+
+        # X rotation
+        tmp = copy.deepcopy(self.piece)
+        next_trans.z = 0
+        next_rot = (next_rot[0] + 1, next_rot[1], next_rot[2])
+        tmp.rotate(next_rot)
+        tmp.translate(next_trans)
+        next_trans = tmp.get_movement_to_start_pos()
+        tmp.translate(next_trans)
+        if tmp.is_valid() and next_rot[0] < 4:
+            return (next_trans, next_rot)
+
+        # Y rotation
+        tmp = copy.deepcopy(self.piece)
+        next_rot = (0, next_rot[1] + 1, next_rot[2])
+        tmp.rotate(next_rot)
+        next_trans = tmp.get_movement_to_start_pos()
+        tmp.translate(next_trans)
+        if tmp.is_valid() and next_rot[1] < 4:
+            return (next_trans, next_rot)
+
+        # Z rotation
+        tmp = copy.deepcopy(self.piece)
+        next_rot = (next_rot[0], 0, next_rot[2] + 1)
+        tmp.rotate(next_rot)
+        next_trans = tmp.get_movement_to_start_pos()
+        tmp.translate(next_trans)
+        if tmp.is_valid() and next_rot[2] < 4:
+            return (next_trans, next_rot)
+
+        return (None, None)
+
+    def __next__(self):
+        if self.trans_state is None or self.rot_state is None:
+            raise StopIteration
+        logging.info("apply trans %s, rot %s", self.trans_state, self.rot_state)
+        piece = copy.deepcopy(self.piece)
+        piece.rotate(self.rot_state)
+        piece.translate(self.trans_state)
+        # Apply rotation and translation on piece, and update rotation and translation for next
+        # iteration if rotation and translation are finished, throw StopIteration
+        (self.trans_state, self.rot_state) = self.search_next()
+        return piece
+
+
 def get_pieces():
     """Return list of pieces in cube puzzle."""
     pieces = []
@@ -492,23 +596,30 @@ def get_pieces():
     return pieces
 
 
+
 def main():
     """Main function."""
+    logging.basicConfig(level=logging.INFO)
     pieces = get_pieces()
     #for piece in pieces:
     #    print(piece)
 
     pieces5 = [p.to_grid_5() for p in pieces]
 
-    for piece in pieces5:
-        print("origin")
-        print(piece)
-        print("rotate")
-        piece.rot90_x()
-        print(piece)
-        print("move to start pos")
-        piece.move_start_pos()
-        print(piece)
+    #for piece in pieces5:
+    #    print("origin")
+    #    print(piece)
+    #    print("rotate")
+    #    piece.rot90_x()
+    #    print(piece)
+    #    print("move to start pos")
+    #    piece.move_start_pos()
+    #    print(piece)
+
+    print(pieces5[0])
+    print("=============")
+    for piece_pos in iter(PiecePositions(pieces5[0])):
+        print(piece_pos)
 
 
 if __name__ == "__main__":
