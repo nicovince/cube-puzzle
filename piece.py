@@ -100,6 +100,8 @@ class Block:
 
     def collides(self, other):
         """Check wether two blocks collides"""
+        if self.pos == other.pos:
+            logging.debug("Block collision %s", self)
         return self.pos == other.pos
 
     def rot90_x(self):
@@ -201,6 +203,7 @@ class Piece5:
         self.blocks = blocks
         self.beams = beams
         self.name = name
+        self.iterator = None
 
     def __repr__(self):
         return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name={self.name})"
@@ -293,9 +296,9 @@ class Piece5:
         for blk in self.blocks:
             blk.pos.translate(vect)
 
-        beams_blks = [blk for beam in self.beams for blk in beam]
-        for beam_blk in beams_blks:
-            beam_blk.pos.translate(vect)
+        for beam in self.beams:
+            for blk in beam:
+                blk.pos.translate(vect)
 
     def rotate(self, rot_cnt):
         """Apply requested number of rotaions on each axis."""
@@ -324,6 +327,14 @@ class Piece5:
     def move_start_pos(self):
         """Move Piece as close as possible to the origin."""
         self.translate(self.get_movement_to_start_pos())
+
+    def next_pos(self):
+        """Update piece to next possible position."""
+        if self.iterator is None:
+            self.iterator = iter(PiecePositions(self))
+        next_piece = next(self.iterator)
+        self.blocks = copy.deepcopy(next_piece.blocks)
+        self.beams = copy.deepcopy(next_piece.beams)
 
 
 class Piece:
@@ -593,18 +604,16 @@ def get_pieces():
                    ],
                    "P8")
     pieces.append(piece8)
-    return pieces
-
+    pieces5 = [p.to_grid_5() for p in pieces]
+    return pieces5
 
 
 def main():
     """Main function."""
     logging.basicConfig(level=logging.INFO)
-    pieces = get_pieces()
+    pieces5 = get_pieces()
     #for piece in pieces:
     #    print(piece)
-
-    pieces5 = [p.to_grid_5() for p in pieces]
 
     #for piece in pieces5:
     #    print("origin")
@@ -617,9 +626,15 @@ def main():
     #    print(piece)
 
     print(pieces5[0])
+    pieces5[0].next_pos()
+    print(pieces5[0])
+    pieces5[0].next_pos()
+    print(pieces5[0])
     print("=============")
-    for piece_pos in iter(PiecePositions(pieces5[0])):
-        print(piece_pos)
+    #for piece_pos in iter(PiecePositions(pieces5[0])):
+    #    print(piece_pos)
+
+
 
 
 if __name__ == "__main__":
