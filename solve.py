@@ -21,19 +21,32 @@ def add_piece(puzzle, unused_pieces):
     Return True if a piece was added, False otherwise.
     """
     new_piece = unused_pieces.pop()
-    print(f"Try to add {new_piece.name}")
+    logging.debug("Try to add %s", new_piece.name)
     while piece_collides_with_others(new_piece, puzzle):
-        print(f"Tested pos {new_piece}")
         try:
             new_piece.next_pos()
         except StopIteration:
             unused_pieces.append(new_piece)
             return False
 
-    print(f"Add {new_piece.name}")
-    print(f"Position {new_piece}")
+    logging.debug("Add %s in position %s", new_piece.name, new_piece.iterator)
+    logging.debug("Position %s", new_piece)
     puzzle.append(new_piece)
     return True
+
+
+def backtrack(puzzle, unused_pieces):
+    """Backtrack on pieces."""
+    rm_piece = puzzle.pop()
+    logging.info("Backtrack on %s", rm_piece.name)
+    try:
+        rm_piece.next_pos()
+    except StopIteration:
+        rm_piece.move_start_pos()
+        backtrack(puzzle, unused_pieces)
+    finally:
+        logging.info("Re-store backtracked %s to heap", rm_piece.name)
+        unused_pieces.append(rm_piece)
 
 
 def solve_puzzle():
@@ -43,8 +56,9 @@ def solve_puzzle():
 
     while len(unused_pieces) > 0:
         if not add_piece(puzzle, unused_pieces):
-            print("TODO backtrack !")
-            break
+            logging.info("Backtrack with %d pieces set and %d left", len(puzzle), len(unused_pieces))
+            backtrack(puzzle, unused_pieces)
+
 
     print("done")
     #for p in puzzle:

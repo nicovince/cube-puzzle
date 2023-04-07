@@ -100,8 +100,6 @@ class Block:
 
     def collides(self, other):
         """Check wether two blocks collides"""
-        if self.pos == other.pos:
-            logging.debug("Block collision %s", self)
         return self.pos == other.pos
 
     def rot90_x(self):
@@ -331,6 +329,7 @@ class Piece5:
     def next_pos(self):
         """Update piece to next possible position."""
         if self.iterator is None:
+            logging.debug("Create iterator for %s", self.name)
             self.iterator = iter(PiecePositions(self))
         next_piece = next(self.iterator)
         self.blocks = copy.deepcopy(next_piece.blocks)
@@ -449,6 +448,9 @@ class PiecePositions:
         self.trans_state = Coords3D(0, 0, 0)
         return self
 
+    def __str__(self):
+        return f"Next rot {self.rot_state}, next trans {self.trans_state}"
+
     def search_next(self):
         """Search next rotation/translation state."""
         tmp = copy.deepcopy(self.piece)
@@ -511,7 +513,7 @@ class PiecePositions:
     def __next__(self):
         if self.trans_state is None or self.rot_state is None:
             raise StopIteration
-        logging.info("apply trans %s, rot %s", self.trans_state, self.rot_state)
+        logging.info("%s apply trans %s, rot %s", self.piece.name, self.trans_state, self.rot_state)
         piece = copy.deepcopy(self.piece)
         piece.rotate(self.rot_state)
         piece.translate(self.trans_state)
