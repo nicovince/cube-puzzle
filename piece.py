@@ -523,48 +523,6 @@ class PiecePositions:
         return piece
 
 
-def get_pieces2():
-    pieces = []
-    p1 = Piece([Block(Coords3D(0, 0, 0)),
-                Block(Coords3D(1, 0, 0)),
-		Block(Coords3D(2, 0, 0)),
-		Block(Coords3D(0, 1, 0)),
-		Block(Coords3D(1, 1, 0)),
-		Block(Coords3D(2, 1, 0)),
-		Block(Coords3D(0, 2, 0)),
-		Block(Coords3D(1, 2, 0)),
-		Block(Coords3D(2, 2, 0))],
-	       [Beam(Coords3D(0, 0, 0), Coords3D(3, 1, 0))],
-	       "EP1")
-    p2 = Piece([Block(Coords3D(0, 0, 0)),
-                Block(Coords3D(1, 0, 0)),
-		Block(Coords3D(2, 0, 0)),
-		Block(Coords3D(0, 1, 0)),
-		Block(Coords3D(1, 1, 0)),
-		Block(Coords3D(2, 1, 0)),
-		Block(Coords3D(0, 2, 0)),
-		Block(Coords3D(1, 2, 0)),
-		Block(Coords3D(2, 2, 0))],
-	       [Beam(Coords3D(0, 1, 0), Coords3D(3, 1, 0))],
-	       "EP2")
-    p3 = Piece([Block(Coords3D(0, 0, 0)),
-                Block(Coords3D(1, 0, 0)),
-		Block(Coords3D(2, 0, 0)),
-		Block(Coords3D(0, 1, 0)),
-		Block(Coords3D(1, 1, 0)),
-		Block(Coords3D(2, 1, 0)),
-		Block(Coords3D(0, 2, 0)),
-		Block(Coords3D(1, 2, 0)),
-		Block(Coords3D(2, 2, 0))],
-	       [Beam(Coords3D(0, 2, 0), Coords3D(3, 1, 0))],
-	       "EP3")
-    pieces.append(p1)
-    pieces.append(p2)
-    pieces.append(p3)
-    pieces5 = [p.to_grid_5() for p in pieces]
-    return pieces5
-
-
 def get_pieces():
     """Return list of pieces in cube puzzle."""
     pieces = []
@@ -651,13 +609,140 @@ def get_pieces():
     pieces5 = [p.to_grid_5() for p in pieces]
     return pieces5
 
+def get_pieces5():
+    """Get list of Pieces5"""
+    p1 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=2), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=0, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=1), grid_5=True)],
+                       [Block(pos=Coords3D(x=2, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=4), grid_5=True)]],
+               name="P1")
+    p2 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=2), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=0, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=1), grid_5=True)],
+                       [Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=4), grid_5=True)]],
+                name="P2")
+
+    p3 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=2, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=0, z=4), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=4), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=1, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=4), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=0), grid_5=True)]],
+                name="P3")
+    p4 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=0, z=4), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=1, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=4), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=1, z=4), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=1, z=4), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=4), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=1, z=4), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=4), grid_5=True)]],
+                name="P4")
+    p5 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=2, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=4), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=1, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=4), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=0), grid_5=True)]],
+                name="P5")
+    p6 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=2, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=2, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=0, z=2), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=0, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=0), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=2, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=3, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=4, z=1), grid_5=True)]],
+                name="P6")
+    p7 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=2, z=4), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=0, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=0, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=0, z=1), grid_5=True)],
+                       [Block(pos=Coords3D(x=4, y=0, z=1), grid_5=True)],
+                       [Block(pos=Coords3D(x=4, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=1, z=4), grid_5=True)]],
+                name="P7")
+    p8 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=2, z=0), grid_5=True)],
+                beams=[[Block(pos=Coords3D(x=1, y=0, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=2, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=3, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=4, z=0), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=1, z=0), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=2), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=3), grid_5=True),
+                        Block(pos=Coords3D(x=0, y=1, z=4), grid_5=True)],
+                       [Block(pos=Coords3D(x=0, y=2, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=1, y=2, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=2, y=2, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=3, y=2, z=1), grid_5=True),
+                        Block(pos=Coords3D(x=4, y=2, z=1), grid_5=True)]],
+                name="P8")
+    return [p1, p2, p3, p4, p5, p6, p7, p8]
+
 
 def main():
     """Main function."""
     logging.basicConfig(level=logging.INFO)
     pieces5 = get_pieces()
-    #for piece in pieces:
-    #    print(piece)
+    for piece in pieces5:
+        print(piece)
+        print(f"{piece!r}")
 
     #for piece in pieces5:
     #    print("origin")
@@ -669,12 +754,12 @@ def main():
     #    piece.move_start_pos()
     #    print(piece)
 
-    print(pieces5[0])
-    pieces5[0].next_pos()
-    print(pieces5[0])
-    pieces5[0].next_pos()
-    print(pieces5[0])
-    print("=============")
+    #print(pieces5[0])
+    #pieces5[0].next_pos()
+    #print(pieces5[0])
+    #pieces5[0].next_pos()
+    #print(pieces5[0])
+    #print("=============")
     #for piece_pos in iter(PiecePositions(pieces5[0])):
     #    print(piece_pos)
 

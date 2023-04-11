@@ -10,7 +10,7 @@ import piece
 import numpy as np
 
 def render_piece(number):
-    pieces = piece.get_pieces()
+    pieces = piece.get_pieces5()
 
     mypiece = pieces[number]
 
