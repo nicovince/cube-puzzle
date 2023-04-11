@@ -136,7 +136,7 @@ class Beam:
             logging.warning("Invalid beam %s", self)
 
     def to_grid_5(self):
-        """Change Beam reprensetation in a 3x3x3 to blocks in a 5x5x5."""
+        """Change Beam representation in a 3x3x3 to blocks in a 5x5x5."""
         blocks = []
         start = beam_to_grid5(self.start)
         vect = beam_to_grid5(self.vect)
@@ -148,25 +148,25 @@ class Beam:
 
 
     def is_valid(self):
-        """Check wether the beam is in a valid position."""
+        """Check whether the beam is in a valid position."""
         bb_start = Coords3D(0, 0, 0)
         bb_end = Coords3D(3, 3, 3)
         return self.start.is_within(bb_start, bb_end) and self.end.is_within(bb_start, bb_end)
 
     def rot90_x(self):
-        """Rotation 90 degree around x axis."""
+        """Rotation 90 degrees around x axis."""
         self.start.rot90_x()
         self.end.rot90_x()
         self.vect.rot90_x()
 
     def rot90_y(self):
-        """Rotation 90 degree around y axis."""
+        """Rotation 90 degrees around y axis."""
         self.start.rot90_y()
         self.end.rot90_y()
         self.vect.rot90_y()
 
     def rot90_z(self):
-        """Rotation 90 degree around z axis."""
+        """Rotation 90 degrees around z axis."""
         self.start.rot90_z()
         self.end.rot90_z()
         self.vect.rot90_z()
@@ -299,7 +299,7 @@ class Piece5:
                 blk.pos.translate(vect)
 
     def rotate(self, rot_cnt):
-        """Apply requested number of rotaions on each axis."""
+        """Apply requested number of rotations on each axis."""
         for _ in range(rot_cnt[0]):
             self.rot90_x()
         for _ in range(rot_cnt[1]):
@@ -390,7 +390,7 @@ class Piece:
         return out
 
     def collides(self, other):
-        """Check wether two pieces collides."""
+        """Check whether two pieces collides."""
         collision = False
         for blk in self.blocks:
             for o_blk in other.blocks:
@@ -400,21 +400,21 @@ class Piece:
         return collision
 
     def rot90_x(self):
-        """Rotation 90 degree around x axis."""
+        """Rotation 90 degrees around x axis."""
         for blk in self.blocks:
             blk.rot90_x()
         for beam in self.beams:
             beam.rot90_x()
 
     def rot90_y(self):
-        """Rotation 90 degree around y axis."""
+        """Rotation 90 degrees around y axis."""
         for blk in self.blocks:
             blk.rot90_y()
         for beam in self.beams:
             beam.rot90_y()
 
     def rot90_z(self):
-        """Rotation 90 degree around z axis."""
+        """Rotation 90 degrees around z axis."""
         for blk in self.blocks:
             blk.rot90_z()
         for beam in self.beams:
