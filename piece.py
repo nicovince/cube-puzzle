@@ -523,6 +523,48 @@ class PiecePositions:
         return piece
 
 
+def get_pieces2():
+    pieces = []
+    p1 = Piece([Block(Coords3D(0, 0, 0)),
+                Block(Coords3D(1, 0, 0)),
+		Block(Coords3D(2, 0, 0)),
+		Block(Coords3D(0, 1, 0)),
+		Block(Coords3D(1, 1, 0)),
+		Block(Coords3D(2, 1, 0)),
+		Block(Coords3D(0, 2, 0)),
+		Block(Coords3D(1, 2, 0)),
+		Block(Coords3D(2, 2, 0))],
+	       [Beam(Coords3D(0, 0, 0), Coords3D(3, 1, 0))],
+	       "EP1")
+    p2 = Piece([Block(Coords3D(0, 0, 0)),
+                Block(Coords3D(1, 0, 0)),
+		Block(Coords3D(2, 0, 0)),
+		Block(Coords3D(0, 1, 0)),
+		Block(Coords3D(1, 1, 0)),
+		Block(Coords3D(2, 1, 0)),
+		Block(Coords3D(0, 2, 0)),
+		Block(Coords3D(1, 2, 0)),
+		Block(Coords3D(2, 2, 0))],
+	       [Beam(Coords3D(0, 1, 0), Coords3D(3, 1, 0))],
+	       "EP2")
+    p3 = Piece([Block(Coords3D(0, 0, 0)),
+                Block(Coords3D(1, 0, 0)),
+		Block(Coords3D(2, 0, 0)),
+		Block(Coords3D(0, 1, 0)),
+		Block(Coords3D(1, 1, 0)),
+		Block(Coords3D(2, 1, 0)),
+		Block(Coords3D(0, 2, 0)),
+		Block(Coords3D(1, 2, 0)),
+		Block(Coords3D(2, 2, 0))],
+	       [Beam(Coords3D(0, 2, 0), Coords3D(3, 1, 0))],
+	       "EP3")
+    pieces.append(p1)
+    pieces.append(p2)
+    pieces.append(p3)
+    pieces5 = [p.to_grid_5() for p in pieces]
+    return pieces5
+
+
 def get_pieces():
     """Return list of pieces in cube puzzle."""
     pieces = []

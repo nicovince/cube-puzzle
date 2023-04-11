@@ -51,7 +51,7 @@ def backtrack(puzzle, unused_pieces):
 
 def solve_puzzle():
     """Solve cube puzzle."""
-    unused_pieces = piece.get_pieces()
+    unused_pieces = piece.get_pieces2()
     puzzle = []
 
     while len(unused_pieces) > 0:
