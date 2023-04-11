@@ -612,7 +612,7 @@ def get_pieces():
                     Block(Coords3D(1, 0, 2)),
                    ],
                    [Beam(Coords3D(1, 0, 0), Coords3D(0, 1, 3)),
-                    Beam(Coords3D(0, 1, 1), Coords3D(3, 0, 1)),
+                    Beam(Coords3D(0, 1, 0), Coords3D(3, 0, 1)),
                    ],
                    "P5")
     pieces.append(piece5)
