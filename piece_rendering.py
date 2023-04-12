@@ -11,6 +11,7 @@ import piece
 import numpy as np
 
 def render_piece(mypiece, suffix, save_blend=False):
+    filepath = os.getcwd()
     blend_filename = f"{filepath}/piece{suffix}.blend"
     png_filename = f"{filepath}/piece{suffix}.png"
     
@@ -143,8 +144,6 @@ def main():
     pieces = piece.get_pieces5()
     i = 0
     for p in pieces:
-        if i > 0:
-            break
         render_piece(p, i)
         pos_idx = 0
         for p_pos in piece.PiecePositions(p):
