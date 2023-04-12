@@ -11,8 +11,8 @@ import numpy as np
 
 def render_piece(mypiece, suffix, save_blend=False):
 
-    save_blend=f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.blend"
-    save_png=f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.png"
+    blend_filename = f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.blend"
+    png_filename = f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.png"
     
     # Clear existing objects.
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -102,22 +102,47 @@ def render_piece(mypiece, suffix, save_blend=False):
     light_ob2.rotation_euler = 37.3, 3.16, 107
     light_ob2.data.energy = 200
     light_ob2.data.color= (1,1,1)
+
+    ## set invisible plane (shadow catcher)
+    invisibleGround(shadowBrightness=0.9)
+
     
     bpy.context.view_layer.update()
     
     if save_blend:
-        bpy.ops.wm.save_as_mainfile(filepath=save_blend)
+        bpy.ops.wm.save_as_mainfile(filepath=blend_filename)
     
-    if save_png:
-        render = scene.render
-        render.use_file_extension = True
-        render.filepath = save_png
-        bpy.ops.render.render(write_still=True)
+    render = scene.render
+    render.use_file_extension = True
+    render.filepath = png_filename
+    bpy.ops.render.render(write_still=True)
+
+
+def invisibleGround(location = (0,0,0), groundSize = 100, shadowBrightness = 0.7):
+	# initialize a ground for shadow
+	bpy.context.scene.cycles.film_transparent = True
+	bpy.ops.mesh.primitive_plane_add(location = location, size = groundSize)
+	try:
+		bpy.context.object.is_shadow_catcher = True # for blender 3.X
+	except:
+		bpy.context.object.cycles.is_shadow_catcher = True # for blender 2.X
+
+	# # set material
+	ground = bpy.context.object
+	mat = bpy.data.materials.new('MeshMaterial')
+	ground.data.materials.append(mat)
+	mat.use_nodes = True
+	tree = mat.node_tree
+	tree.nodes["Principled BSDF"].inputs['Transmission'].default_value = shadowBrightness
+
+
 
 def main():
     pieces = piece.get_pieces5()
     i = 0
     for p in pieces:
+        if i > 0:
+            break
         render_piece(p, i)
         pos_idx = 0
         for p_pos in piece.PiecePositions(p):
