@@ -3,6 +3,7 @@
 # will render all pieces in separate files
 
 import bpy
+import os
 import sys       # to get command line args
 import argparse  # to parse options for us and print a nice help message
 import math
@@ -10,9 +11,8 @@ import piece
 import numpy as np
 
 def render_piece(mypiece, suffix, save_blend=False):
-
-    blend_filename = f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.blend"
-    png_filename = f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.png"
+    blend_filename = f"{filepath}/piece{suffix}.blend"
+    png_filename = f"{filepath}/piece{suffix}.png"
     
     # Clear existing objects.
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -115,6 +115,8 @@ def render_piece(mypiece, suffix, save_blend=False):
     render = scene.render
     render.use_file_extension = True
     render.filepath = png_filename
+    render.resolution_x = 640
+    render.resolution_y = 480
     bpy.ops.render.render(write_still=True)
 
 
