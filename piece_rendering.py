@@ -9,13 +9,10 @@ import math
 import piece
 import numpy as np
 
-def render_piece(number):
-    pieces = piece.get_pieces5()
+def render_piece(mypiece, suffix, save_blend=False):
 
-    mypiece = pieces[number]
-
-    save_blend=f"/home/julie/perso/nico/cube-puzzle/piece{number}.blend"
-    save_png=f"/home/julie/perso/nico/cube-puzzle/piece{number}.png"
+    save_blend=f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.blend"
+    save_png=f"/home/julie/perso/nico/cube-puzzle/piece{suffix}.png"
     
     # Clear existing objects.
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -118,8 +115,15 @@ def render_piece(number):
         bpy.ops.render.render(write_still=True)
 
 def main():
-    for i in range(0,8):
-        render_piece(i)
+    pieces = piece.get_pieces5()
+    i = 0
+    for p in pieces:
+        render_piece(p, i)
+        pos_idx = 0
+        for p_pos in piece.PiecePositions(p):
+            render_piece(p_pos, f"{i}_{pos_idx}")
+            pos_idx = pos_idx + 1
+        i = i + 1
 
 
 main()
