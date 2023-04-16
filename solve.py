@@ -76,7 +76,8 @@ def solve_puzzle():
     while len(unused_pieces) > 0:
         logging.info("Puzzle: %d pieces, unused: %d pieces", len(puzzle), len(unused_pieces))
         if not add_piece(puzzle, unused_pieces):
-            logging.info("Backtrack with %d pieces set and %d left", len(puzzle), len(unused_pieces))
+            logging.info("Backtrack with %d pieces set and %d left",
+                         len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
         dump_state(f"state_{i}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
         i = i + 1

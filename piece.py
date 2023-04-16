@@ -2,8 +2,8 @@
 """Handle Pieces, blocks and beams"""
 import logging
 import copy
-from coords import Coords3D
 import sys
+from coords import Coords3D
 
 
 def combine_bb_vects(old, new):
@@ -627,7 +627,7 @@ def get_pieces5():
                         Block(pos=Coords3D(x=2, y=1, z=2), grid_5=True),
                         Block(pos=Coords3D(x=2, y=1, z=3), grid_5=True),
                         Block(pos=Coords3D(x=2, y=1, z=4), grid_5=True)]],
-               name="P1")
+                name="P1")
     p2 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0), grid_5=True),
                         Block(pos=Coords3D(x=0, y=0, z=2), grid_5=True),
                         Block(pos=Coords3D(x=4, y=0, z=0), grid_5=True),
