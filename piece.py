@@ -514,7 +514,8 @@ class PiecePositions:
     def __next__(self):
         if self.trans_state is None or self.rot_state is None:
             raise StopIteration
-        logging.info("%s apply trans %s, rot %s", self.piece.name, self.trans_state, self.rot_state)
+        logging.info("%s apply rotation %s, offset %s trans %s",
+                     self.piece.name, self.rot_state, self.offset, self.trans_state)
         piece = copy.deepcopy(self.piece)
         # Apply rotation and translation on piece, and update rotation and translation for next
         # iteration if rotation and translation are finished, throw StopIteration
@@ -747,6 +748,11 @@ def main():
         i = i + 1
         print(p_pos)
     print(i)
+    print(pieces5[0])
+    while True:
+        pieces5[0].next_pos()
+        print(pieces5[0])
+
     sys.exit(0)
     for piece in pieces5:
         print(piece)
