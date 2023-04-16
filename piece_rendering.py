@@ -105,7 +105,7 @@ def render_piece(mypiece, suffix, save_blend=False):
     light_ob2.data.color= (1,1,1)
 
     ## set invisible plane (shadow catcher)
-    invisibleGround(shadowBrightness=0.9)
+    #invisibleGround(shadowBrightness=0.9)
 
     
     bpy.context.view_layer.update()
