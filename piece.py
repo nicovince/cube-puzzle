@@ -3,6 +3,7 @@
 import logging
 import copy
 from coords import Coords3D
+import sys
 
 
 def combine_bb_vects(old, new):
@@ -439,11 +440,11 @@ class PiecePositions:
     """Iterator for Piece Positions."""
     def __init__(self, piece):
         self.piece = copy.deepcopy(piece)
+        self.offset = self.piece.get_movement_to_start_pos()
         self.rot_state = (0, 0, 0)
         self.trans_state = Coords3D(0, 0, 0)
 
     def __iter__(self):
-        self.piece.move_start_pos()
         self.rot_state = (0, 0, 0)
         self.trans_state = Coords3D(0, 0, 0)
         return self
@@ -456,70 +457,71 @@ class PiecePositions:
         tmp = copy.deepcopy(self.piece)
         next_trans = self.trans_state
         next_rot = self.rot_state
+        next_offset = self.offset
 
         # X translation
         next_trans = next_trans.add(Coords3D(1, 0, 0))
-        tmp.movement(next_trans, next_rot)
+        tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
         # Y translation
         tmp = copy.deepcopy(self.piece)
         next_trans.x = 0
         next_trans = next_trans.add(Coords3D(0, 1, 0))
-        tmp.movement(next_trans, next_rot)
+        tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
         # Z translation
         tmp = copy.deepcopy(self.piece)
         next_trans.y = 0
         next_trans = next_trans.add(Coords3D(0, 0, 1))
-        tmp.movement(next_trans, next_rot)
+        tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
         # X rotation
         tmp = copy.deepcopy(self.piece)
         next_trans.z = 0
         next_rot = (next_rot[0] + 1, next_rot[1], next_rot[2])
         tmp.rotate(next_rot)
-        tmp.translate(next_trans)
-        next_trans = tmp.get_movement_to_start_pos()
-        tmp.translate(next_trans)
+        next_offset = tmp.get_movement_to_start_pos()
+        tmp.translate(next_offset)
         if tmp.is_valid() and next_rot[0] < 4:
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
         # Y rotation
         tmp = copy.deepcopy(self.piece)
         next_rot = (0, next_rot[1] + 1, next_rot[2])
         tmp.rotate(next_rot)
-        next_trans = tmp.get_movement_to_start_pos()
-        tmp.translate(next_trans)
+        next_offset = tmp.get_movement_to_start_pos()
+        tmp.translate(next_offset)
         if tmp.is_valid() and next_rot[1] < 4:
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
         # Z rotation
         tmp = copy.deepcopy(self.piece)
         next_rot = (next_rot[0], 0, next_rot[2] + 1)
         tmp.rotate(next_rot)
-        next_trans = tmp.get_movement_to_start_pos()
-        tmp.translate(next_trans)
+        next_offset = tmp.get_movement_to_start_pos()
+        tmp.translate(next_offset)
         if tmp.is_valid() and next_rot[2] < 4:
-            return (next_trans, next_rot)
+            return (next_offset, next_trans, next_rot)
 
-        return (None, None)
+        return (None, None, None)
 
     def __next__(self):
         if self.trans_state is None or self.rot_state is None:
             raise StopIteration
         logging.info("%s apply trans %s, rot %s", self.piece.name, self.trans_state, self.rot_state)
         piece = copy.deepcopy(self.piece)
-        piece.rotate(self.rot_state)
-        piece.translate(self.trans_state)
         # Apply rotation and translation on piece, and update rotation and translation for next
         # iteration if rotation and translation are finished, throw StopIteration
-        (self.trans_state, self.rot_state) = self.search_next()
+        piece.rotate(self.rot_state)
+        piece.translate(self.offset)
+        piece.translate(self.trans_state)
+        (self.offset, self.trans_state, self.rot_state) = self.search_next()
         return piece
 
 
@@ -740,6 +742,12 @@ def main():
     """Main function."""
     logging.basicConfig(level=logging.INFO)
     pieces5 = get_pieces()
+    i = 0
+    for p_pos in iter(PiecePositions(pieces5[0])):
+        i = i + 1
+        print(p_pos)
+    print(i)
+    sys.exit(0)
     for piece in pieces5:
         print(piece)
         print(f"{piece!r}")

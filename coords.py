@@ -9,6 +9,7 @@ class Coords3D:
         self.y = y
         self.z = z
 
+
     def add(self, other):
         """Adds two instance of Coords3D together.
 
@@ -16,6 +17,8 @@ class Coords3D:
         """
         assert isinstance(other, type(self))
         return Coords3D(self.x + other.x, self.y + other.y, self.z + other.z)
+
+    __add__ = add
 
     def is_within(self, start, end):
         """Check wether a coordinate is inside a bounding box (inclusive)."""

@@ -61,8 +61,8 @@ def solve_puzzle():
 
 
     print("done")
-    #for p in puzzle:
-    #    print(p)
+    for p in puzzle:
+        print(p)
 
     #print("Unused Pieces:")
     #for p in unused_pieces:
