@@ -19,6 +19,7 @@ def piece_collides_with_others(one, others):
 
 def dump_state(filename, puzzle, unused, comment=None):
     """Dump puzzle state"""
+    logging.debug(f"Dump to {filename}")
     with open(filename, 'w') as fd:
         fd.write("#!/usr/bin/env python3\n")
         fd.write("from piece import *")
@@ -59,12 +60,15 @@ def backtrack(puzzle, unused_pieces):
     logging.info("Backtrack on %s", rm_piece.name)
     try:
         rm_piece.next_pos()
+        logging.info("Re-store backtracked %s to heap in position %s",
+                     rm_piece.name, rm_piece.iterator)
+        unused_pieces.append(rm_piece)
     except StopIteration:
         rm_piece.move_start_pos()
-        backtrack(puzzle, unused_pieces)
-    finally:
-        logging.info("Re-store backtracked %s to heap", rm_piece.name)
+        rm_piece.iterator = None
+        logging.info("Re-store backtracked %s to heap in original position", rm_piece.name)
         unused_pieces.append(rm_piece)
+        backtrack(puzzle, unused_pieces)
 
 
 def solve_puzzle():
@@ -79,7 +83,7 @@ def solve_puzzle():
             logging.info("Backtrack with %d pieces set and %d left",
                          len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
-        dump_state(f"state_{i}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
+        dump_state(f"state_{i:03d}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
         i = i + 1
 
 
