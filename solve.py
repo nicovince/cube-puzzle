@@ -46,6 +46,7 @@ def add_piece(puzzle, unused_pieces):
             new_piece.next_pos()
         except StopIteration:
             unused_pieces.append(new_piece)
+            new_piece.iterator = None
             return False
 
     logging.debug("Add %s in position %s", new_piece.name, new_piece.iterator)
@@ -78,12 +79,12 @@ def solve_puzzle():
 
     i = 0
     while len(unused_pieces) > 0:
-        logging.info("Puzzle: %d pieces, unused: %d pieces", len(puzzle), len(unused_pieces))
+        logging.info("state %d Puzzle: %d pieces, unused: %d pieces", i, len(puzzle), len(unused_pieces))
         if not add_piece(puzzle, unused_pieces):
             logging.info("Backtrack with %d pieces set and %d left",
                          len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
-        dump_state(f"state_{i:03d}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
+        #dump_state(f"state_{i:03d}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
         i = i + 1
 
 
@@ -100,5 +101,5 @@ def main():
     solve_puzzle()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     main()

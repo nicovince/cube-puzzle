@@ -450,7 +450,7 @@ class PiecePositions:
         return self
 
     def __str__(self):
-        return f"Next rot {self.rot_state}, next trans {self.trans_state}"
+        return f"Next rot {self.rot_state}, offset {self.offset} next trans {self.trans_state}"
 
     def search_next(self):
         """Search next rotation/translation state."""
@@ -514,8 +514,8 @@ class PiecePositions:
     def __next__(self):
         if self.trans_state is None or self.rot_state is None:
             raise StopIteration
-        logging.info("%s apply rotation %s, offset %s trans %s",
-                     self.piece.name, self.rot_state, self.offset, self.trans_state)
+        logging.debug("%s apply rotation %s, offset %s trans %s",
+                      self.piece.name, self.rot_state, self.offset, self.trans_state)
         piece = copy.deepcopy(self.piece)
         # Apply rotation and translation on piece, and update rotation and translation for next
         # iteration if rotation and translation are finished, throw StopIteration
