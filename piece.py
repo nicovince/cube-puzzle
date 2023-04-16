@@ -205,7 +205,7 @@ class Piece5:
         self.iterator = None
 
     def __repr__(self):
-        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name={self.name})"
+        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name='{self.name}')"
 
     def __str__(self):
         out = f"{self.name}\n"

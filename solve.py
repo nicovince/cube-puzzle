@@ -16,6 +16,24 @@ def piece_collides_with_others(one, others):
             return True
     return False
 
+
+def dump_state(filename, puzzle, unused, comment=None):
+    """Dump puzzle state"""
+    with open(filename, 'w') as fd:
+        fd.write("#!/usr/bin/env python3\n")
+        fd.write("from piece import *")
+        if comment is not None:
+            fd.write(f"# {comment}\n\n")
+        fd.write("# Pieces inside puzzle\n")
+        fd.write("puzzle = []\n")
+        for piece_puzzle in puzzle:
+            fd.write(f"puzzle.append({piece_puzzle!r})\n")
+        fd.write("# Unused pieces\n")
+        fd.write("unused = []\n")
+        for piece_unused in unused:
+            fd.write(f"unused.append({piece_unused!r})\n")
+
+
 def add_piece(puzzle, unused_pieces):
     """Add a piece from unused to the puzzle if possible
     Return True if a piece was added, False otherwise.
@@ -54,11 +72,14 @@ def solve_puzzle():
     unused_pieces = piece.get_pieces5()
     puzzle = []
 
+    i = 0
     while len(unused_pieces) > 0:
         logging.info("Puzzle: %d pieces, unused: %d pieces", len(puzzle), len(unused_pieces))
         if not add_piece(puzzle, unused_pieces):
             logging.info("Backtrack with %d pieces set and %d left", len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
+        dump_state(f"state_{i}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
+        i = i + 1
 
 
     print("done")
