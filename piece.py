@@ -330,11 +330,11 @@ class Piece5:
     def next_pos(self):
         """Update piece to next possible position."""
         if self.iterator is None:
-            logging.debug("Create iterator for %s", self.name)
+            logging.info("Create iterator for %s", self.name)
             self.iterator = iter(PiecePositions(self))
         next_piece = next(self.iterator)
-        self.blocks = copy.deepcopy(next_piece.blocks)
-        self.beams = copy.deepcopy(next_piece.beams)
+        self.blocks = next_piece.blocks
+        self.beams = next_piece.beams
 
 
 class Piece:
@@ -439,25 +439,40 @@ class Piece:
 class PiecePositions:
     """Iterator for Piece Positions."""
     def __init__(self, piece):
+        logging.debug("{piece.name} PiecePositions Constructor")
         self.piece = copy.deepcopy(piece)
-        self.offset = self.piece.get_movement_to_start_pos()
-        self.rot_state = (0, 0, 0)
-        self.trans_state = Coords3D(0, 0, 0)
+        movement = (self.piece.get_movement_to_start_pos(), Coords3D(0, 0, 0), (0, 0, 0))
+        movements = [movement]
+        while movement is not None:
+            (offset, trans, rot) = movement
+            movement = self.search_next(offset, trans, rot)
+            if movement is None:
+                break
+            else:
+                movements.append(movement)
+        self.positions = []
+        for m in movements:
+            p = copy.deepcopy(self.piece)
+            p.movement(m[0] + m[1], m[2])
+            self.positions.append(p)
+        self.current_position = 0
 
     def __iter__(self):
-        self.rot_state = (0, 0, 0)
-        self.trans_state = Coords3D(0, 0, 0)
+        self.current_position = 0
         return self
 
     def __str__(self):
-        return f"Next rot {self.rot_state}, offset {self.offset} next trans {self.trans_state}"
+        return f"movement {self.current_position}"
 
-    def search_next(self):
+    def reset(self):
+        self.current_position = 0
+
+    def search_next(self, offset, trans, rot):
         """Search next rotation/translation state."""
         tmp = copy.deepcopy(self.piece)
-        next_trans = self.trans_state
-        next_rot = self.rot_state
-        next_offset = self.offset
+        next_offset = offset
+        next_trans = trans
+        next_rot = rot
 
         # X translation
         next_trans = next_trans.add(Coords3D(1, 0, 0))
@@ -509,21 +524,13 @@ class PiecePositions:
         if tmp.is_valid() and next_rot[2] < 4:
             return (next_offset, next_trans, next_rot)
 
-        return (None, None, None)
+        return None
 
     def __next__(self):
-        if self.trans_state is None or self.rot_state is None:
+        if self.current_position >= len(self.positions):
             raise StopIteration
-        logging.debug("%s apply rotation %s, offset %s trans %s",
-                      self.piece.name, self.rot_state, self.offset, self.trans_state)
-        piece = copy.deepcopy(self.piece)
-        # Apply rotation and translation on piece, and update rotation and translation for next
-        # iteration if rotation and translation are finished, throw StopIteration
-        piece.rotate(self.rot_state)
-        piece.translate(self.offset)
-        piece.translate(self.trans_state)
-        (self.offset, self.trans_state, self.rot_state) = self.search_next()
-        return piece
+        self.current_position = self.current_position + 1
+        return self.positions[self.current_position - 1]
 
 
 def get_pieces():
@@ -751,6 +758,7 @@ def main():
     print(pieces5[0])
     while True:
         pieces5[0].next_pos()
+        print(f"Iterator: {pieces5[0].iterator}")
         print(pieces5[0])
 
     sys.exit(0)
