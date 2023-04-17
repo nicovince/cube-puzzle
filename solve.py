@@ -7,6 +7,7 @@ if all positions exhausted remove piece n-1 and translate/rotate that piece
 """
 
 import logging
+import time
 import piece
 
 def piece_collides_with_others(one, others):
@@ -58,11 +59,10 @@ def add_piece(puzzle, unused_pieces):
 def backtrack(puzzle, unused_pieces):
     """Backtrack on pieces."""
     rm_piece = puzzle.pop()
-    logging.info("Backtrack on %s", rm_piece.name)
     try:
         rm_piece.next_pos()
-        logging.info("Re-store backtracked %s to heap in position %s",
-                     rm_piece.name, rm_piece.iterator)
+        logging.debug("Re-store backtracked %s to heap in position %s",
+                      rm_piece.name, rm_piece.iterator)
         unused_pieces.append(rm_piece)
     except StopIteration:
         rm_piece.move_start_pos()
@@ -78,14 +78,22 @@ def solve_puzzle():
     puzzle = []
 
     i = 0
+    n_pieces = 1000
+    last_ts = time.time()
+    start_ts = last_ts
     while len(unused_pieces) > 0:
-        logging.info("state %d Puzzle: %d pieces, unused: %d pieces", i, len(puzzle), len(unused_pieces))
+        logging.debug("state %d Puzzle: %d pieces, unused: %d pieces", i, len(puzzle), len(unused_pieces))
         if not add_piece(puzzle, unused_pieces):
-            logging.info("Backtrack with %d pieces set and %d left",
-                         len(puzzle), len(unused_pieces))
+            logging.debug("Backtrack on %s with %d pieces set and %d left",
+                          puzzle[-1].name, len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
         #dump_state(f"state_{i:03d}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
         i = i + 1
+        if i % n_pieces == 0:
+            now_ts = time.time()
+            logging.info("Processed %d states in %ds, total processed %d in %ds",
+                         n_pieces, now_ts - last_ts, i, now_ts - start_ts)
+            last_ts = now_ts
 
 
     print("done")
