@@ -757,7 +757,11 @@ def main():
     print(i)
     print(pieces5[0])
     while True:
-        pieces5[0].next_pos()
+        try:
+            pieces5[0].next_pos()
+        except StopIteration:
+            pieces5[0].iterator.reset()
+            break
         print(f"Iterator: {pieces5[0].iterator}")
         print(pieces5[0])
 
