@@ -6,8 +6,11 @@ if collision, translate/rotate last piece
 if all positions exhausted remove piece n-1 and translate/rotate that piece
 """
 
+import argparse
 import logging
 import time
+import cProfile
+import sys
 import piece
 
 def piece_collides_with_others(one, others):
@@ -95,19 +98,28 @@ def solve_puzzle():
                          n_pieces, now_ts - last_ts, i, now_ts - start_ts)
             last_ts = now_ts
 
-
     print("done")
     for p in puzzle:
         print(p)
 
-    #print("Unused Pieces:")
-    #for p in unused_pieces:
-    #    print(p)
 
 def main():
     """Entry point"""
-    solve_puzzle()
+    parser = argparse.ArgumentParser(prog="solve", description="Solve Cube Puzzle")
+    parser.add_argument("--loglevel",
+                        default='warning',
+                        help='Provide logging level. Example --loglevel debug, default=warning')
+    parser.add_argument("--cprof",
+                        default=False,
+                        action="store_true",
+                        help="Enable cProfile")
+    args = parser.parse_args()
+    logging.basicConfig(level=args.loglevel.upper())
+
+    if args.cprof:
+        cProfile.run('solve_puzzle()')
+    else:
+        solve_puzzle()
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
     main()
