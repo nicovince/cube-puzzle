@@ -233,8 +233,9 @@ class Piece5:
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
         for blk in self.blocks:
-            if not blk.is_valid():
+            if not blk.is_valid() or blk.is_odd():
                 return False
+
         for beam in self.beams:
             for blk in beam:
                 if not blk.is_valid():
@@ -325,7 +326,17 @@ class Piece5:
             x = min(x, blk.pos.x)
             y = min(y, blk.pos.y)
             z = min(z, blk.pos.z)
-        return Coords3D(-x, -y, -z)
+        offset = Coords3D(-x, -y, -z)
+        coord_blk0 = copy.deepcopy(self.blocks[0].pos)
+        fix_offset = Coords3D(0, 0, 0)
+        new_blk0 = coord_blk0 + offset
+        if new_blk0.x % 2:
+            fix_offset.x = 1
+        if new_blk0.y % 2:
+            fix_offset.y = 1
+        if new_blk0.z % 2:
+            fix_offset.z = 1
+        return offset + fix_offset
 
     def move_start_pos(self):
         """Move Piece as close as possible to the origin."""
@@ -479,7 +490,7 @@ class PiecePositions:
         next_rot = rot
 
         # X translation
-        next_trans = next_trans.add(Coords3D(1, 0, 0))
+        next_trans = next_trans.add(Coords3D(2, 0, 0))
         tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
             return (next_offset, next_trans, next_rot)
@@ -487,7 +498,7 @@ class PiecePositions:
         # Y translation
         tmp = copy.deepcopy(self.piece)
         next_trans.x = 0
-        next_trans = next_trans.add(Coords3D(0, 1, 0))
+        next_trans = next_trans.add(Coords3D(0, 2, 0))
         tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
             return (next_offset, next_trans, next_rot)
@@ -495,7 +506,7 @@ class PiecePositions:
         # Z translation
         tmp = copy.deepcopy(self.piece)
         next_trans.y = 0
-        next_trans = next_trans.add(Coords3D(0, 0, 1))
+        next_trans = next_trans.add(Coords3D(0, 0, 2))
         tmp.movement(next_trans + next_offset, next_rot)
         if tmp.is_valid():
             return (next_offset, next_trans, next_rot)
@@ -762,6 +773,9 @@ def main():
         print(f"{i} positions for piece {piece.name}")
         state_cnt *=i
     print(f"{state_cnt} possible")
+
+    #for pos_p0 in iter(PiecePositions(pieces5[0])):
+    #    print(pos_p0)
 
     sys.exit(0)
     print(i)
