@@ -3,6 +3,7 @@
 import logging
 import copy
 import sys
+import numpy as np
 from coords import Coords3D
 
 
@@ -29,6 +30,7 @@ class Block:
     def __init__(self, pos):
         assert isinstance(pos, Coords3D)
         self.pos = pos
+        self.compute_np()
         if not self.is_valid():
             logging.warning("Invalid position %s", self)
 
@@ -53,7 +55,8 @@ class Block:
 
     def collides(self, other):
         """Check wether two blocks collides"""
-        return self.pos == other.pos
+        blks_union = self.np_pos & other.np_pos
+        return not(np.amax(blks_union) == 0)
 
     def rot90_x(self):
         """Rotation 90 degree around x axis."""
@@ -71,6 +74,10 @@ class Block:
         """Get vector to move block inside 3x3x3 bounding box."""
         bb_len = 5
         return self.pos.get_bb_vect(bb_len)
+
+    def compute_np(self):
+        self.np_pos = np.zeros((5, 5, 5), dtype=int)
+        self.np_pos[self.pos.x, self.pos.y, self.pos.z] = 1
 
 
 class Beam:
@@ -140,6 +147,7 @@ class Piece5:
         self.beams = beams
         self.name = name
         self.iterator = None
+        self.compute_np()
 
     def __repr__(self):
         return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name='{self.name}')"
@@ -284,11 +292,22 @@ class Piece5:
         self.blocks = next_piece.blocks
         self.beams = next_piece.beams
 
+    def compute_np(self):
+        self.np_blbe = np.zeros((5, 5, 5), dtype=int)
+        for blk in self.blocks:
+            blk.compute_np()
+            self.np_blbe += blk.np_pos
+        for beam in self.beams:
+            for blk in beam:
+                blk.compute_np()
+                self.np_blbe += blk.np_pos
+
+
 
 class PiecePositions:
     """Iterator for Piece Positions."""
     def __init__(self, piece):
-        logging.debug("{piece.name} PiecePositions Constructor")
+        logging.debug("%s PiecePositions Constructor", piece.name)
         self.piece = copy.deepcopy(piece)
         movement = (self.piece.get_movement_to_start_pos(), Coords3D(0, 0, 0), (0, 0, 0))
         movements = [movement]
@@ -303,6 +322,7 @@ class PiecePositions:
         for m in movements:
             p = copy.deepcopy(self.piece)
             p.movement(m[0] + m[1], m[2])
+            p.compute_np()
             self.positions.append(p)
         self.current_position = 0
 
@@ -522,8 +542,11 @@ def main():
         state_cnt *=i
     print(f"{state_cnt} possible")
 
-    #for pos_p0 in iter(PiecePositions(pieces5[0])):
-    #    print(pos_p0)
+    print(pieces5[0].np_blbe)
+    print(pieces5[0])
+
+    for pos_p0 in iter(PiecePositions(pieces5[0])):
+        print(f"{pos_p0.name}\n{pos_p0.np_blbe}")
 
     sys.exit(0)
     print(i)
