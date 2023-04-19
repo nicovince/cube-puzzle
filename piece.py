@@ -99,6 +99,10 @@ class Block:
             bb_end = Coords3D(4, 4, 4)
         return self.pos.is_within(bb_start, bb_end)
 
+    def is_odd(self):
+        """True when x,y,z are even"""
+        return (self.pos.x % 2) and (self.pos.y % 2) and (self.pos.z % 2)
+
     def collides(self, other):
         """Check wether two blocks collides"""
         return self.pos == other.pos
@@ -750,10 +754,16 @@ def main():
     """Main function."""
     logging.basicConfig(level=logging.INFO)
     pieces5 = get_pieces()
-    i = 0
-    for p_pos in iter(PiecePositions(pieces5[0])):
-        i = i + 1
-        print(p_pos)
+    state_cnt = 1
+    for piece in pieces5:
+        i = 0
+        for piece_pos in iter(PiecePositions(piece)):
+            i = i + 1
+        print(f"{i} positions for piece {piece.name}")
+        state_cnt *=i
+    print(f"{state_cnt} possible")
+
+    sys.exit(0)
     print(i)
     print(pieces5[0])
     while True:
@@ -765,7 +775,6 @@ def main():
         print(f"Iterator: {pieces5[0].iterator}")
         print(pieces5[0])
 
-    sys.exit(0)
     for piece in pieces5:
         print(piece)
         print(f"{piece!r}")
