@@ -166,7 +166,7 @@ class Piece5:
             for blk in beam:
                 if pad:
                     out += "    "
-                out += f" {blk}\n"
+                out += f" beam-{blk}\n"
                 pad = True
             out += "\n"
         return out
@@ -524,6 +524,16 @@ def get_pieces5():
                 name="P8")
     return [p1, p2, p3, p4, p5, p6, p7, p8]
 
+def get_result():
+    p8 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0)), Block(pos=Coords3D(x=0, y=2, z=0))], beams=[[Block(pos=Coords3D(x=1, y=0, z=0)), Block(pos=Coords3D(x=1, y=1, z=0)), Block(pos=Coords3D(x=1, y=2, z=0)), Block(pos=Coords3D(x=1, y=3, z=0)), Block(pos=Coords3D(x=1, y=4, z=0))], [Block(pos=Coords3D(x=0, y=1, z=0)), Block(pos=Coords3D(x=0, y=1, z=1)), Block(pos=Coords3D(x=0, y=1, z=2)), Block(pos=Coords3D(x=0, y=1, z=3)), Block(pos=Coords3D(x=0, y=1, z=4))], [Block(pos=Coords3D(x=0, y=2, z=1)), Block(pos=Coords3D(x=1, y=2, z=1)), Block(pos=Coords3D(x=2, y=2, z=1)), Block(pos=Coords3D(x=3, y=2, z=1)), Block(pos=Coords3D(x=4, y=2, z=1))]], name='P8')
+    p7 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=4, z=0)), Block(pos=Coords3D(x=4, y=0, z=0)), Block(pos=Coords3D(x=2, y=0, z=0)), Block(pos=Coords3D(x=0, y=0, z=2))], beams=[[Block(pos=Coords3D(x=3, y=4, z=0)), Block(pos=Coords3D(x=3, y=3, z=0)), Block(pos=Coords3D(x=3, y=2, z=0)), Block(pos=Coords3D(x=3, y=1, z=0)), Block(pos=Coords3D(x=3, y=0, z=0))], [Block(pos=Coords3D(x=3, y=0, z=0))], [Block(pos=Coords3D(x=4, y=0, z=1)), Block(pos=Coords3D(x=3, y=0, z=1)), Block(pos=Coords3D(x=2, y=0, z=1)), Block(pos=Coords3D(x=1, y=0, z=1)), Block(pos=Coords3D(x=0, y=0, z=1))]], name='P7')
+    p6 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=4, z=2)), Block(pos=Coords3D(x=2, y=0, z=2)), Block(pos=Coords3D(x=0, y=4, z=4))], beams=[[Block(pos=Coords3D(x=1, y=4, z=2)), Block(pos=Coords3D(x=1, y=3, z=2)), Block(pos=Coords3D(x=1, y=2, z=2)), Block(pos=Coords3D(x=1, y=1, z=2)), Block(pos=Coords3D(x=1, y=0, z=2))], [Block(pos=Coords3D(x=0, y=4, z=3)), Block(pos=Coords3D(x=1, y=4, z=3)), Block(pos=Coords3D(x=2, y=4, z=3)), Block(pos=Coords3D(x=3, y=4, z=3)), Block(pos=Coords3D(x=4, y=4, z=3))]], name='P6')
+    p5 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=4, z=0)), Block(pos=Coords3D(x=0, y=4, z=2)), Block(pos=Coords3D(x=0, y=2, z=4)), Block(pos=Coords3D(x=4, y=4, z=2))], beams=[[Block(pos=Coords3D(x=0, y=4, z=1)), Block(pos=Coords3D(x=1, y=4, z=1)), Block(pos=Coords3D(x=2, y=4, z=1)), Block(pos=Coords3D(x=3, y=4, z=1)), Block(pos=Coords3D(x=4, y=4, z=1))], [Block(pos=Coords3D(x=0, y=3, z=0)), Block(pos=Coords3D(x=0, y=3, z=1)), Block(pos=Coords3D(x=0, y=3, z=2)), Block(pos=Coords3D(x=0, y=3, z=3)), Block(pos=Coords3D(x=0, y=3, z=4))]], name='P5')
+    p4 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=2, z=2)), Block(pos=Coords3D(x=4, y=2, z=4))], beams=[[Block(pos=Coords3D(x=0, y=2, z=3)), Block(pos=Coords3D(x=1, y=2, z=3)), Block(pos=Coords3D(x=2, y=2, z=3)), Block(pos=Coords3D(x=3, y=2, z=3)), Block(pos=Coords3D(x=4, y=2, z=3))], [Block(pos=Coords3D(x=4, y=3, z=4)), Block(pos=Coords3D(x=4, y=3, z=3)), Block(pos=Coords3D(x=4, y=3, z=2)), Block(pos=Coords3D(x=4, y=3, z=1)), Block(pos=Coords3D(x=4, y=3, z=0))]], name='P4')
+    p3 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=2, z=4)), Block(pos=Coords3D(x=0, y=0, z=4)), Block(pos=Coords3D(x=2, y=4, z=0)), Block(pos=Coords3D(x=2, y=2, z=0))], beams=[[Block(pos=Coords3D(x=2, y=3, z=4)), Block(pos=Coords3D(x=2, y=3, z=3)), Block(pos=Coords3D(x=2, y=3, z=2)), Block(pos=Coords3D(x=2, y=3, z=1)), Block(pos=Coords3D(x=2, y=3, z=0))], [Block(pos=Coords3D(x=1, y=4, z=4)), Block(pos=Coords3D(x=1, y=3, z=4)), Block(pos=Coords3D(x=1, y=2, z=4)), Block(pos=Coords3D(x=1, y=1, z=4)), Block(pos=Coords3D(x=1, y=0, z=4))]], name='P3')
+    p2 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=0, z=4)), Block(pos=Coords3D(x=2, y=0, z=4)), Block(pos=Coords3D(x=4, y=4, z=4)), Block(pos=Coords3D(x=2, y=4, z=4))], beams=[[Block(pos=Coords3D(x=3, y=0, z=4)), Block(pos=Coords3D(x=3, y=1, z=4)), Block(pos=Coords3D(x=3, y=2, z=4)), Block(pos=Coords3D(x=3, y=3, z=4)), Block(pos=Coords3D(x=3, y=4, z=4))], [Block(pos=Coords3D(x=3, y=1, z=4))], [Block(pos=Coords3D(x=4, y=0, z=3)), Block(pos=Coords3D(x=3, y=0, z=3)), Block(pos=Coords3D(x=2, y=0, z=3)), Block(pos=Coords3D(x=1, y=0, z=3)), Block(pos=Coords3D(x=0, y=0, z=3))]], name='P2')
+    p1 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=0, z=2)), Block(pos=Coords3D(x=4, y=2, z=2)), Block(pos=Coords3D(x=4, y=2, z=0))], beams=[[Block(pos=Coords3D(x=4, y=1, z=4)), Block(pos=Coords3D(x=4, y=1, z=3)), Block(pos=Coords3D(x=4, y=1, z=2)), Block(pos=Coords3D(x=4, y=1, z=1)), Block(pos=Coords3D(x=4, y=1, z=0))], [Block(pos=Coords3D(x=3, y=0, z=2)), Block(pos=Coords3D(x=3, y=1, z=2)), Block(pos=Coords3D(x=3, y=2, z=2)), Block(pos=Coords3D(x=3, y=3, z=2)), Block(pos=Coords3D(x=3, y=4, z=2))]], name='P1')
+    return [p1, p2, p3, p4, p5, p6, p7, p8]
 
 def main():
     """Main function."""

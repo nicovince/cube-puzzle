@@ -141,14 +141,14 @@ def invisibleGround(location = (0,0,0), groundSize = 100, shadowBrightness = 0.7
 
 
 def main():
-    pieces = piece.get_pieces5()
+    pieces = piece.get_result()
     i = 0
     for p in pieces:
         render_piece(p, i)
         pos_idx = 0
-        for p_pos in piece.PiecePositions(p):
-            render_piece(p_pos, f"{i}_{pos_idx}")
-            pos_idx = pos_idx + 1
+        #for p_pos in piece.PiecePositions(p):
+        #    render_piece(p_pos, f"{i}_{pos_idx}")
+        #    pos_idx = pos_idx + 1
         i = i + 1
 
 

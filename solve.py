@@ -100,6 +100,7 @@ def solve_puzzle():
     print("done")
     for p in puzzle:
         print(p)
+        print(f"{p!r}")
 
 
 def main():
