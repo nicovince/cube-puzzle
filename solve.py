@@ -49,8 +49,8 @@ def add_piece(puzzle, unused_pieces):
         try:
             new_piece.next_pos()
         except StopIteration:
+            new_piece.reset()
             unused_pieces.append(new_piece)
-            new_piece.iterator.reset()
             return False
 
     logging.debug("Add %s in position %s", new_piece.name, new_piece.iterator)
@@ -68,8 +68,7 @@ def backtrack(puzzle, unused_pieces):
                       rm_piece.name, rm_piece.iterator)
         unused_pieces.append(rm_piece)
     except StopIteration:
-        rm_piece.move_start_pos()
-        rm_piece.iterator.reset()
+        rm_piece.reset()
         logging.info("Re-store backtracked %s to heap in original position", rm_piece.name)
         unused_pieces.append(rm_piece)
         backtrack(puzzle, unused_pieces)

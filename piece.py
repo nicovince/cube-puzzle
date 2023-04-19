@@ -185,17 +185,8 @@ class Piece5:
 
     def collides(self, other):
         """Check wether two pieces collides."""
-        for blk in self.blocks:
-            for o_blk in other.blocks:
-                if blk.collides(o_blk):
-                    return True
-        beams_blks = [blk for beam in self.beams for blk in beam]
-        o_beams_blks = [blk for beam in other.beams for blk in beam]
-        for blk_beam in beams_blks:
-            for o_blk_beam in o_beams_blks:
-                if blk_beam.collides(o_blk_beam):
-                    return True
-        return False
+        blks_union = self.np_blbe & other.np_blbe
+        return not(np.amax(blks_union) == 0)
 
     def rot90_x(self):
         """Rotation 90 degree around x axis."""
@@ -283,6 +274,11 @@ class Piece5:
         """Move Piece as close as possible to the origin."""
         self.translate(self.get_movement_to_start_pos())
 
+    def reset(self):
+        assert self.iterator is not None
+        self.iterator.reset()
+        self.next_pos()
+
     def next_pos(self):
         """Update piece to next possible position."""
         if self.iterator is None:
@@ -291,6 +287,7 @@ class Piece5:
         next_piece = next(self.iterator)
         self.blocks = next_piece.blocks
         self.beams = next_piece.beams
+        self.np_blbe = next_piece.np_blbe
 
     def compute_np(self):
         self.np_blbe = np.zeros((5, 5, 5), dtype=int)
@@ -301,7 +298,6 @@ class Piece5:
             for blk in beam:
                 blk.compute_np()
                 self.np_blbe += blk.np_pos
-
 
 
 class PiecePositions:
@@ -534,23 +530,33 @@ def main():
     logging.basicConfig(level=logging.INFO)
     pieces5 = get_pieces5()
     state_cnt = 1
-    for piece in pieces5:
-        i = 0
-        for piece_pos in iter(PiecePositions(piece)):
-            i = i + 1
-        print(f"{i} positions for piece {piece.name}")
-        state_cnt *=i
-    print(f"{state_cnt} possible")
+    #print(pieces5[-1].name)
+    #print(pieces5[-1])
+    #print(pieces5[-1].np_blbe)
+    #print(pieces5[-2].name)
+    #print(pieces5[-2])
+    #print(pieces5[-2].np_blbe)
+    #for piece in [pieces5[-1]]:
+    #    i = 0
+    #    for piece_pos in iter(PiecePositions(piece)):
+    #        #print(piece_pos)
+    #        #print(piece_pos.np_blbe)
+    #        i = i + 1
+    #    print(f"{i} positions for piece {piece.name}")
+    #    state_cnt *=i
+    #print(f"{state_cnt} possible")
 
-    print(pieces5[0].np_blbe)
-    print(pieces5[0])
+    #p8 = pieces5[-1]
+    #p7 = pieces5[-2]
+    #for pos_p in iter(PiecePositions(p7)):
+    #    collision = pos_p.collides(p8)
+    #    if not collision:
+    #        print(f"{pos_p} and {p8}")
+    #        sys.exit(0)
 
-    for pos_p0 in iter(PiecePositions(pieces5[0])):
-        print(f"{pos_p0.name}\n{pos_p0.np_blbe}")
-
-    sys.exit(0)
-    print(i)
-    print(pieces5[0])
+    #sys.exit(1)
+    #print(i)
+    #print(pieces5[0])
     while True:
         try:
             pieces5[0].next_pos()
@@ -559,7 +565,9 @@ def main():
             break
         print(f"Iterator: {pieces5[0].iterator}")
         print(pieces5[0])
+        print(pieces5[0].np_blbe)
 
+    sys.exit(1)
     for piece in pieces5:
         print(piece)
         print(f"{piece!r}")
