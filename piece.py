@@ -423,7 +423,7 @@ def get_pieces5():
                         Block(pos=Coords3D(x=2, y=0, z=1)),
                         Block(pos=Coords3D(x=3, y=0, z=1)),
                         Block(pos=Coords3D(x=4, y=0, z=1))],
-                       [Block(pos=Coords3D(x=2, y=0, z=2))],
+                       [Block(pos=Coords3D(x=1, y=0, z=2))],
                        [Block(pos=Coords3D(x=0, y=1, z=0)),
                         Block(pos=Coords3D(x=0, y=1, z=1)),
                         Block(pos=Coords3D(x=0, y=1, z=2)),
