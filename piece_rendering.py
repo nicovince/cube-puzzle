@@ -141,7 +141,7 @@ def invisibleGround(location = (0,0,0), groundSize = 100, shadowBrightness = 0.7
 
 
 def main():
-    pieces = piece.get_result()
+    pieces = piece.get_result2()
     i = 0
     for p in pieces:
         render_piece(p, i)
