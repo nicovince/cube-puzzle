@@ -39,6 +39,22 @@ def dump_state(filename, puzzle, unused, comment=None):
             fd.write(f"unused.append({piece_unused!r})\n")
 
 
+def get_str_state(puzzle, unused):
+    state = ""
+    for piece in puzzle:
+        state += f"{piece.name} "
+        if piece.iterator is None:
+            state += "X"
+        else:
+            state += f"{piece.iterator.current_position} "
+
+    state += "["
+    for piece in unused:
+        state += f"{piece.name} "
+    state += "]"
+    return state
+
+
 def add_piece(puzzle, unused_pieces):
     """Add a piece from unused to the puzzle if possible
     Return True if a piece was added, False otherwise.
@@ -90,6 +106,7 @@ def solve_puzzle():
                           puzzle[-1].name, len(puzzle), len(unused_pieces))
             backtrack(puzzle, unused_pieces)
         #dump_state(f"state_{i:03d}_{len(puzzle)}_{len(unused_pieces)}.py", puzzle, unused_pieces)
+        #print(get_str_state(puzzle, unused_pieces))
         i = i + 1
         if i % n_pieces == 0:
             now_ts = time.time()
