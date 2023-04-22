@@ -10,6 +10,7 @@ import argparse
 import logging
 import time
 import cProfile
+import numpy as np
 import piece
 from coords import Coords3D
 
@@ -19,6 +20,12 @@ def piece_collides_with_others(one, others):
         if other_piece.collides(one):
             return True
     return False
+
+
+def np_check_collision(pce, puzzle):
+    """Compute numpy representation and check collision with the rest of the puzzle."""
+    pce.compute_np(15)
+    return piece_collides_with_others(pce, puzzle)
 
 
 def dump_state(filename, puzzle, unused, comment=None):
@@ -122,6 +129,69 @@ def mount_puzzle():
         print(f"{p!r}")
 
 
+def move_puzzle_piece(puzzle, piece):
+    """Move piece of puzzle without causing collision.
+
+    puzze: list of pieces forming the current puzzle state
+    piece: member of puzzle this function will try to translate.
+
+    Return Movement vector
+    """
+    p_idx = puzzle.index(piece)
+    # Remove piece of puzzle temporary to check collision with the rest
+    puzzle.remove(piece)
+    movements = [Coords3D(1, 0, 0), Coords3D(0, 1, 0), Coords3D(0, 0, 1),
+                 Coords3D(-1, 0, 0), Coords3D(0, -1, 0), Coords3D(0, 0, -1)]
+    bb_start = Coords3D(0, 0, 0)
+    bb_end = Coords3D(14, 14, 14)
+    last_trans = piece.get_last_trans()
+    if last_trans is not None:
+        logging.debug("%s last trans %s, remove %s for possible movements",
+                      piece.name, last_trans, -last_trans.get_direction())
+        movements.remove(-last_trans.get_direction())
+
+    trans = None
+    for m in movements:
+        trans = m
+        trans_cnt = 0
+        piece.translate(m)
+        while piece.is_within(bb_start, bb_end) and not np_check_collision(piece, puzzle):
+            trans_cnt += 1
+            piece.translate(m)
+        # Revert last translation as it caused the piece to collide or move out of the bounding box
+        piece.translate(-m)
+        if trans_cnt != 0:
+            break
+    puzzle.insert(p_idx, piece)
+    return trans * trans_cnt
+
+
+def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
+    """Move a piece of the puzzle, and remove it if outside of puzzle."""
+    rm_piece = None
+    null_trans = Coords3D(0, 0, 0)
+    for p in puzzle:
+        logging.debug("%s trans history: %s", p.name, p.umount_trans_history)
+        while True:
+            trans = move_puzzle_piece(puzzle, p)
+            if trans == null_trans:
+                logging.debug("%s could not move further", p.name)
+                break
+            logging.info("Moved %s %s", p.name, trans)
+            p.add_trans_history(trans)
+            # Check piece is out of the puzzle for good
+            blks_union = p.np_blbe & puzzle_bb_np
+            if np.amax(blks_union) == 0:
+                print(f"{p.name} is out of puzzle")
+                pieces_out.append(p)
+                rm_piece = p
+                break
+        logging.debug("Processed %s", p.name)
+        if rm_piece is not None:
+            break
+    if rm_piece is not None:
+        puzzle.remove(rm_piece)
+
 def umount_puzzle():
     """Remove pieces of puzzle without collision."""
     puzzle = piece.get_result()
@@ -129,6 +199,18 @@ def umount_puzzle():
     # translated to get out of the mounted puzzle.
     for p in puzzle:
         p.translate(Coords3D(5, 5, 5))
+        p.compute_np(15)
+
+    puzzle_bb_np = np.zeros((15, 15, 15), dtype=int)
+    for x in range(5, 10):
+        for y in range(5, 10):
+            for z in range(5, 10):
+                puzzle_bb_np[x, y, z] = 1
+
+    pieces_out = []
+    while len(puzzle) > 1:
+        unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
+    print("Done")
 
 
 def solve_puzzle(action):

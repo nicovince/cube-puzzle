@@ -20,6 +20,14 @@ class Coords3D:
 
     __add__ = add
 
+    def __mul__(self, other):
+        """Multiply coord with scalar."""
+        return Coords3D(self.x * other, self.y * other, self.z * other)
+
+    def __neg__(self):
+        """Return negative coord (opposite relative to (0, 0, 0))."""
+        return Coords3D(-self.x, -self.y, -self.z)
+
     def is_within(self, start, end):
         """Check wether a coordinate is inside a bounding box (inclusive)."""
         return (((self.x >= start.x) and (self.x <= end.x))
@@ -35,6 +43,34 @@ class Coords3D:
     def __eq__(self, other):
         assert isinstance(other, type(self))
         return self.x == other.x and self.y == other.y and self.z == other.z
+
+    def get_direction(self):
+        """Return unary vector direction, must be along an axis !"""
+        if self.x > 0:
+            dir_x = 1
+        elif self.x < 0:
+            dir_x = -1
+        else:
+            dir_x = 0
+        if self.y > 0:
+            assert dir_x == 0
+            dir_y = 1
+        elif self.y < 0:
+            assert dir_x == 0
+            dir_y = -1
+        else:
+            dir_y = 0
+        if self.z > 0:
+            assert dir_x == 0
+            assert dir_y == 0
+            dir_z = 1
+        elif self.z < 0:
+            dir_z = -1
+            assert dir_x == 0
+            assert dir_y == 0
+        else:
+            dir_z = 0
+        return Coords3D(dir_x, dir_y, dir_z)
 
     def rot90_x(self):
         """Rotation 90 degree around x axis."""

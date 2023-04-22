@@ -47,7 +47,11 @@ class Block:
         """Check wether the block is in a valid position."""
         bb_start = Coords3D(0, 0, 0)
         bb_end = Coords3D(4, 4, 4)
-        return self.pos.is_within(bb_start, bb_end)
+        return self.is_within(bb_start, bb_end)
+
+    def is_within(self, start, end):
+        """Check piece is inside bounding box."""
+        return self.pos.is_within(start, end)
 
     def is_odd(self):
         """True when x,y,z are even"""
@@ -75,9 +79,9 @@ class Block:
         bb_len = 5
         return self.pos.get_bb_vect(bb_len)
 
-    def compute_np(self):
+    def compute_np(self, dim=5):
         """Compute numpy array to rerpesent piece and check collision."""
-        self.np_pos = np.zeros((5, 5, 5), dtype=int)
+        self.np_pos = np.zeros((dim, dim, dim), dtype=int)
         self.np_pos[self.pos.x, self.pos.y, self.pos.z] = 1
 
 
@@ -149,6 +153,7 @@ class Piece5:
         self.name = name
         self.iterator = None
         self.np_blbe = None
+        self.umount_trans_history = []
         self.compute_np()
 
     def __repr__(self):
@@ -175,6 +180,14 @@ class Piece5:
             out += "\n"
         return out
 
+    def add_trans_history(self, trans):
+        self.umount_trans_history.append(trans)
+
+    def get_last_trans(self):
+        if len(self.umount_trans_history):
+            return self.umount_trans_history[-1]
+        return None
+
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""
         for blk in self.blocks:
@@ -186,6 +199,18 @@ class Piece5:
                 if not blk.is_valid():
                     return False
         return True
+
+    def is_within(self, start, end):
+        """Check wether piece is inside bounding box."""
+        for blk in self.blocks:
+            if not blk.is_within(start, end):
+                return False
+        for beam in self.beams:
+            for blk in beam:
+                if not blk.is_within(start, end):
+                    return False
+        return True
+
 
     def collides(self, other):
         """Check wether two pieces collides."""
@@ -294,15 +319,15 @@ class Piece5:
         self.beams = next_piece.beams
         self.np_blbe = next_piece.np_blbe
 
-    def compute_np(self):
+    def compute_np(self, dim=5):
         """Compute numpy array to rerpesent piece and check collision."""
-        self.np_blbe = np.zeros((5, 5, 5), dtype=int)
+        self.np_blbe = np.zeros((dim, dim, dim), dtype=int)
         for blk in self.blocks:
-            blk.compute_np()
+            blk.compute_np(dim)
             self.np_blbe += blk.np_pos
         for beam in self.beams:
             for blk in beam:
-                blk.compute_np()
+                blk.compute_np(dim)
                 self.np_blbe += blk.np_pos
 
 
