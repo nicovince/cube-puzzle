@@ -10,6 +10,7 @@ import argparse
 import logging
 import time
 import cProfile
+import copy
 import numpy as np
 import piece
 from coords import Coords3D
@@ -188,8 +189,10 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
                 pieces_out.append(p)
                 rm_piece = p
                 break
+            if trans is not None:
+                break
         logging.debug("Processed %s", p.name)
-        if rm_piece is not None:
+        if rm_piece is not None or trans is not None:
             break
     if rm_piece is not None:
         puzzle.remove(rm_piece)
@@ -214,9 +217,12 @@ def umount_puzzle():
                 puzzle_bb_np[x, y, z] = 1
 
     pieces_out = []
+    steps = []
     while len(puzzle) > 1:
         unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
+        steps.append(copy.deepcopy(puzzle))
     print("Et voila !")
+    return steps
 
 
 def solve_puzzle(action):
