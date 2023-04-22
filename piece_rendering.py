@@ -77,7 +77,7 @@ def render_state(puzzle, suffix):
     #cam_ob.location = 4.6027, 10.459, 6.329
     #cam_ob.rotation_euler = 63.6*pi/180, -0.394*pi/180, -201*pi/180
     ##pos cam 3
-    cam_ob.location = -3.6678, -5.5478, 4.0441
+    cam_ob.location = -3.6678, -5.5478, 6.0441
     cam_ob.rotation_euler = 64.5*pi/180, -2.9*pi/180, -397*pi/180
 
     # Light
@@ -247,6 +247,12 @@ def invisibleGround(location = (0,0,0), groundSize = 100, shadowBrightness = 0.7
 
 
 def main():
+    i = 0
+    states = solve.umount_puzzle()
+    for state in states:
+        render_state(state, i)
+        i += 1
+
     pieces = piece.get_result()
     i = 0
     for p in pieces:
@@ -257,10 +263,6 @@ def main():
         #    pos_idx = pos_idx + 1
         i = i + 1
 
-    i = 0
-    for state in solve.umount_puzzle():
-        render_state(state, i)
-        i += 1
 
 
 main()
