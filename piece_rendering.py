@@ -12,6 +12,9 @@ import solve
 import numpy as np
 
 
+def color(r, g, b):
+    return (r/255, g/255, b/255, 1)
+
 def render_state(puzzle, suffix):
     save_blend = False
     filepath = os.getcwd()
@@ -26,13 +29,40 @@ def render_state(puzzle, suffix):
     scene.render.film_transparent = True
 
 
+    cube_colors = []
+    beam_colors = []
+    cube_colors.append(color(72, 50, 193))
+    beam_colors.append(color(126, 224, 152))
+
+    cube_colors.append(color(168, 80, 72))
+    beam_colors.append(color(235, 142, 134))
+
+    cube_colors.append(color(194, 121, 25))
+    beam_colors.append(color(247, 182, 96))
+
+    cube_colors.append(color(237, 240, 53))
+    beam_colors.append(color(240, 242, 124))
+
+    cube_colors.append(color(42, 99, 245))
+    beam_colors.append(color(126, 157, 237))
+
+    cube_colors.append(color(175, 74, 245))
+    beam_colors.append(color(209, 142, 250))
+
+    cube_colors.append(color(245, 76, 217))
+    beam_colors.append(color(247, 142, 230))
+
+    cube_colors.append(color(137, 89, 189))
+    beam_colors.append(color(176, 136, 219))
+
     size = 0.2
     coord = 2*size
     i = 0
-    cubecolor=204/255,170/255,155/255,1
-    mat = bpy.data.materials.new("cubecolor")
-    mat.diffuse_color = cubecolor
     for p in puzzle:
+        p_idx = int(p.name[1]) - 1
+        cubecolor = cube_colors[p_idx]
+        mat = bpy.data.materials.new("cubecolor")
+        mat.diffuse_color = cubecolor
         for block in p.blocks:
             c = block.pos
             bpy.ops.mesh.primitive_cube_add()
@@ -47,7 +77,7 @@ def render_state(puzzle, suffix):
         i = 0
         sizeb=0.2
         coordb = 2*sizeb
-        beamcolor=89/255,71/255,53/255,1
+        beamcolor = beam_colors[p_idx]
         mat2 = bpy.data.materials.new("beamcolor")
         mat2.diffuse_color = beamcolor
         for beam in p.beams:
