@@ -531,7 +531,7 @@ def get_pieces5():
     return [p1, p2, p3, p4, p5, p6, p7, p8]
 
 
-def get_result2():
+def get_result():
     """Get pieces of puzzle in their final position."""
     p8 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0)),
                         Block(pos=Coords3D(x=0, y=2, z=0))],
