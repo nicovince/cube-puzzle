@@ -10,7 +10,6 @@ import argparse
 import logging
 import time
 import cProfile
-import sys
 import piece
 
 def piece_collides_with_others(one, others):
@@ -23,7 +22,7 @@ def piece_collides_with_others(one, others):
 
 def dump_state(filename, puzzle, unused, comment=None):
     """Dump puzzle state"""
-    logging.debug(f"Dump to {filename}")
+    logging.debug("Dump to %s", filename)
     with open(filename, 'w') as fd:
         fd.write("#!/usr/bin/env python3\n")
         fd.write("from piece import *")
@@ -40,17 +39,18 @@ def dump_state(filename, puzzle, unused, comment=None):
 
 
 def get_str_state(puzzle, unused):
+    """Get string to reprensent state of puzzle and unused pieces."""
     state = ""
-    for piece in puzzle:
-        state += f"{piece.name} "
-        if piece.iterator is None:
+    for p in puzzle:
+        state += f"{p.name} "
+        if p.iterator is None:
             state += "X"
         else:
-            state += f"{piece.iterator.current_position} "
+            state += f"{p.iterator.current_position} "
 
     state += "["
-    for piece in unused:
-        state += f"{piece.name} "
+    for p in unused:
+        state += f"{p.name} "
     state += "]"
     return state
 
@@ -100,7 +100,8 @@ def solve_puzzle():
     last_ts = time.time()
     start_ts = last_ts
     while len(unused_pieces) > 0:
-        logging.debug("state %d Puzzle: %d pieces, unused: %d pieces", i, len(puzzle), len(unused_pieces))
+        logging.debug("state %d Puzzle: %d pieces, unused: %d pieces",
+                      i, len(puzzle), len(unused_pieces))
         if not add_piece(puzzle, unused_pieces):
             logging.debug("Backtrack on %s with %d pieces set and %d left",
                           puzzle[-1].name, len(puzzle), len(unused_pieces))

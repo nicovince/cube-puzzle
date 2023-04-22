@@ -56,7 +56,7 @@ class Block:
     def collides(self, other):
         """Check wether two blocks collides"""
         blks_union = self.np_pos & other.np_pos
-        return not(np.amax(blks_union) == 0)
+        return not np.amax(blks_union) == 0
 
     def rot90_x(self):
         """Rotation 90 degree around x axis."""
@@ -76,6 +76,7 @@ class Block:
         return self.pos.get_bb_vect(bb_len)
 
     def compute_np(self):
+        """Compute numpy array to rerpesent piece and check collision."""
         self.np_pos = np.zeros((5, 5, 5), dtype=int)
         self.np_pos[self.pos.x, self.pos.y, self.pos.z] = 1
 
@@ -147,10 +148,13 @@ class Piece5:
         self.beams = beams
         self.name = name
         self.iterator = None
+        self.np_blbe = None
         self.compute_np()
 
     def __repr__(self):
-        return f"{type(self).__name__}(blocks={self.blocks}, beams={self.beams}, name='{self.name}')"
+        repr_str = f"{type(self).__name__}(blocks={self.blocks}, "
+        repr_str += f"beams={self.beams}, name='{self.name}')"
+        return repr_str
 
     def __str__(self):
         out = f"{self.name}\n"
@@ -186,7 +190,7 @@ class Piece5:
     def collides(self, other):
         """Check wether two pieces collides."""
         blks_union = self.np_blbe & other.np_blbe
-        return not(np.amax(blks_union) == 0)
+        return not np.amax(blks_union) == 0
 
     def rot90_x(self):
         """Rotation 90 degree around x axis."""
@@ -275,6 +279,7 @@ class Piece5:
         self.translate(self.get_movement_to_start_pos())
 
     def reset(self):
+        """Reset positions iterator."""
         assert self.iterator is not None
         self.iterator.reset()
         self.next_pos()
@@ -290,6 +295,7 @@ class Piece5:
         self.np_blbe = next_piece.np_blbe
 
     def compute_np(self):
+        """Compute numpy array to rerpesent piece and check collision."""
         self.np_blbe = np.zeros((5, 5, 5), dtype=int)
         for blk in self.blocks:
             blk.compute_np()
@@ -312,8 +318,7 @@ class PiecePositions:
             movement = self.search_next(offset, trans, rot)
             if movement is None:
                 break
-            else:
-                movements.append(movement)
+            movements.append(movement)
         self.positions = []
         for m in movements:
             p = copy.deepcopy(self.piece)
@@ -330,6 +335,7 @@ class PiecePositions:
         return f"movement {self.current_position}"
 
     def reset(self):
+        """Reset iterator."""
         self.current_position = 0
 
     def search_next(self, offset, trans, rot):
@@ -524,131 +530,9 @@ def get_pieces5():
                 name="P8")
     return [p1, p2, p3, p4, p5, p6, p7, p8]
 
-def get_result():
-    p8 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0)),
-                        Block(pos=Coords3D(x=0, y=2, z=0))],
-                beams=[[Block(pos=Coords3D(x=1, y=0, z=0)),
-                        Block(pos=Coords3D(x=1, y=1, z=0)),
-                        Block(pos=Coords3D(x=1, y=2, z=0)),
-                        Block(pos=Coords3D(x=1, y=3, z=0)),
-                        Block(pos=Coords3D(x=1, y=4, z=0))],
-                       [Block(pos=Coords3D(x=0, y=1, z=0)),
-                        Block(pos=Coords3D(x=0, y=1, z=1)),
-                        Block(pos=Coords3D(x=0, y=1, z=2)),
-                        Block(pos=Coords3D(x=0, y=1, z=3)),
-                        Block(pos=Coords3D(x=0, y=1, z=4))],
-                       [Block(pos=Coords3D(x=0, y=2, z=1)),
-                        Block(pos=Coords3D(x=1, y=2, z=1)),
-                        Block(pos=Coords3D(x=2, y=2, z=1)),
-                        Block(pos=Coords3D(x=3, y=2, z=1)),
-                        Block(pos=Coords3D(x=4, y=2, z=1))]],
-                name='P8')
-    p7 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=4, z=0)),
-                        Block(pos=Coords3D(x=4, y=0, z=0)),
-                        Block(pos=Coords3D(x=2, y=0, z=0)),
-                        Block(pos=Coords3D(x=0, y=0, z=2))],
-                beams=[[Block(pos=Coords3D(x=3, y=4, z=0)),
-                        Block(pos=Coords3D(x=3, y=3, z=0)),
-                        Block(pos=Coords3D(x=3, y=2, z=0)),
-                        Block(pos=Coords3D(x=3, y=1, z=0)),
-                        Block(pos=Coords3D(x=3, y=0, z=0))],
-                       [Block(pos=Coords3D(x=3, y=0, z=0))],
-                       [Block(pos=Coords3D(x=4, y=0, z=1)),
-                        Block(pos=Coords3D(x=3, y=0, z=1)),
-                        Block(pos=Coords3D(x=2, y=0, z=1)),
-                        Block(pos=Coords3D(x=1, y=0, z=1)),
-                        Block(pos=Coords3D(x=0, y=0, z=1))]],
-                name='P7')
-    p6 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=4, z=2)),
-                        Block(pos=Coords3D(x=2, y=0, z=2)),
-                        Block(pos=Coords3D(x=0, y=4, z=4))],
-                beams=[[Block(pos=Coords3D(x=1, y=4, z=2)),
-                        Block(pos=Coords3D(x=1, y=3, z=2)),
-                        Block(pos=Coords3D(x=1, y=2, z=2)),
-                        Block(pos=Coords3D(x=1, y=1, z=2)),
-                        Block(pos=Coords3D(x=1, y=0, z=2))],
-                       [Block(pos=Coords3D(x=0, y=4, z=3)),
-                        Block(pos=Coords3D(x=1, y=4, z=3)),
-                        Block(pos=Coords3D(x=2, y=4, z=3)),
-                        Block(pos=Coords3D(x=3, y=4, z=3)),
-                        Block(pos=Coords3D(x=4, y=4, z=3))]],
-                name='P6')
-    p5 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=4, z=0)),
-                        Block(pos=Coords3D(x=0, y=4, z=2)),
-                        Block(pos=Coords3D(x=0, y=2, z=4)),
-                        Block(pos=Coords3D(x=4, y=4, z=2))],
-                beams=[[Block(pos=Coords3D(x=0, y=4, z=1)),
-                        Block(pos=Coords3D(x=1, y=4, z=1)),
-                        Block(pos=Coords3D(x=2, y=4, z=1)),
-                        Block(pos=Coords3D(x=3, y=4, z=1)),
-                        Block(pos=Coords3D(x=4, y=4, z=1))],
-                       [Block(pos=Coords3D(x=0, y=3, z=0)),
-                        Block(pos=Coords3D(x=0, y=3, z=1)),
-                        Block(pos=Coords3D(x=0, y=3, z=2)),
-                        Block(pos=Coords3D(x=0, y=3, z=3)),
-                        Block(pos=Coords3D(x=0, y=3, z=4))]],
-                name='P5')
-    p4 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=2, z=2)),
-                        Block(pos=Coords3D(x=4, y=2, z=4))],
-                beams=[[Block(pos=Coords3D(x=0, y=2, z=3)),
-                        Block(pos=Coords3D(x=1, y=2, z=3)),
-                        Block(pos=Coords3D(x=2, y=2, z=3)),
-                        Block(pos=Coords3D(x=3, y=2, z=3)),
-                        Block(pos=Coords3D(x=4, y=2, z=3))],
-                       [Block(pos=Coords3D(x=4, y=3, z=4)),
-                        Block(pos=Coords3D(x=4, y=3, z=3)),
-                        Block(pos=Coords3D(x=4, y=3, z=2)),
-                        Block(pos=Coords3D(x=4, y=3, z=1)),
-                        Block(pos=Coords3D(x=4, y=3, z=0))]],
-                name='P4')
-    p3 = Piece5(blocks=[Block(pos=Coords3D(x=2, y=2, z=4)),
-                        Block(pos=Coords3D(x=0, y=0, z=4)),
-                        Block(pos=Coords3D(x=2, y=4, z=0)),
-                        Block(pos=Coords3D(x=2, y=2, z=0))],
-                beams=[[Block(pos=Coords3D(x=2, y=3, z=4)),
-                        Block(pos=Coords3D(x=2, y=3, z=3)),
-                        Block(pos=Coords3D(x=2, y=3, z=2)),
-                        Block(pos=Coords3D(x=2, y=3, z=1)),
-                        Block(pos=Coords3D(x=2, y=3, z=0))],
-                       [Block(pos=Coords3D(x=1, y=4, z=4)),
-                        Block(pos=Coords3D(x=1, y=3, z=4)),
-                        Block(pos=Coords3D(x=1, y=2, z=4)),
-                        Block(pos=Coords3D(x=1, y=1, z=4)),
-                        Block(pos=Coords3D(x=1, y=0, z=4))]],
-                name='P3')
-    p2 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=0, z=4)),
-                        Block(pos=Coords3D(x=2, y=0, z=4)),
-                        Block(pos=Coords3D(x=4, y=4, z=4)),
-                        Block(pos=Coords3D(x=2, y=4, z=4))],
-                beams=[[Block(pos=Coords3D(x=3, y=0, z=4)),
-                        Block(pos=Coords3D(x=3, y=1, z=4)),
-                        Block(pos=Coords3D(x=3, y=2, z=4)),
-                        Block(pos=Coords3D(x=3, y=3, z=4)),
-                        Block(pos=Coords3D(x=3, y=4, z=4))],
-                       [Block(pos=Coords3D(x=3, y=1, z=4))],
-                       [Block(pos=Coords3D(x=4, y=0, z=3)),
-                        Block(pos=Coords3D(x=3, y=0, z=3)),
-                        Block(pos=Coords3D(x=2, y=0, z=3)),
-                        Block(pos=Coords3D(x=1, y=0, z=3)),
-                        Block(pos=Coords3D(x=0, y=0, z=3))]],
-                name='P2')
-    p1 = Piece5(blocks=[Block(pos=Coords3D(x=4, y=0, z=2)),
-                        Block(pos=Coords3D(x=4, y=2, z=2)),
-                        Block(pos=Coords3D(x=4, y=2, z=0))],
-                beams=[[Block(pos=Coords3D(x=4, y=1, z=4)),
-                        Block(pos=Coords3D(x=4, y=1, z=3)),
-                        Block(pos=Coords3D(x=4, y=1, z=2)),
-                        Block(pos=Coords3D(x=4, y=1, z=1)),
-                        Block(pos=Coords3D(x=4, y=1, z=0))],
-                       [Block(pos=Coords3D(x=3, y=0, z=2)),
-                        Block(pos=Coords3D(x=3, y=1, z=2)),
-                        Block(pos=Coords3D(x=3, y=2, z=2)),
-                        Block(pos=Coords3D(x=3, y=3, z=2)),
-                        Block(pos=Coords3D(x=3, y=4, z=2))]],
-                name='P1')
-    return [p1, p2, p3, p4, p5, p6, p7, p8]
 
 def get_result2():
+    """Get pieces of puzzle in their final position."""
     p8 = Piece5(blocks=[Block(pos=Coords3D(x=0, y=0, z=0)),
                         Block(pos=Coords3D(x=0, y=2, z=0))],
                 beams=[[Block(pos=Coords3D(x=1, y=0, z=0)),
@@ -778,75 +662,8 @@ def get_result2():
 def main():
     """Main function."""
     logging.basicConfig(level=logging.INFO)
-    pieces5 = get_pieces5()
-    state_cnt = 1
-    for p in get_result():
-        print(p)
-    for p in get_result2():
-        print(p)
-    sys.exit(1)
-    #print(pieces5[-1].name)
-    #print(pieces5[-1])
-    #print(pieces5[-1].np_blbe)
-    #print(pieces5[-2].name)
-    #print(pieces5[-2])
-    #print(pieces5[-2].np_blbe)
-    #for piece in [pieces5[-1]]:
-    #    i = 0
-    #    for piece_pos in iter(PiecePositions(piece)):
-    #        #print(piece_pos)
-    #        #print(piece_pos.np_blbe)
-    #        i = i + 1
-    #    print(f"{i} positions for piece {piece.name}")
-    #    state_cnt *=i
-    #print(f"{state_cnt} possible")
 
-    #p8 = pieces5[-1]
-    #p7 = pieces5[-2]
-    #for pos_p in iter(PiecePositions(p7)):
-    #    collision = pos_p.collides(p8)
-    #    if not collision:
-    #        print(f"{pos_p} and {p8}")
-    #        sys.exit(0)
-
-    #sys.exit(1)
-    #print(i)
-    #print(pieces5[0])
-    while True:
-        try:
-            pieces5[0].next_pos()
-        except StopIteration:
-            pieces5[0].iterator.reset()
-            break
-        print(f"Iterator: {pieces5[0].iterator}")
-        print(pieces5[0])
-        print(pieces5[0].np_blbe)
-
-    sys.exit(1)
-    for piece in pieces5:
-        print(piece)
-        print(f"{piece!r}")
-
-    #for piece in pieces5:
-    #    print("origin")
-    #    print(piece)
-    #    print("rotate")
-    #    piece.rot90_x()
-    #    print(piece)
-    #    print("move to start pos")
-    #    piece.move_start_pos()
-    #    print(piece)
-
-    #print(pieces5[0])
-    #pieces5[0].next_pos()
-    #print(pieces5[0])
-    #pieces5[0].next_pos()
-    #print(pieces5[0])
-    #print("=============")
-    #for piece_pos in iter(PiecePositions(pieces5[0])):
-    #    print(piece_pos)
-
-
+    sys.exit(0)
 
 
 if __name__ == "__main__":
