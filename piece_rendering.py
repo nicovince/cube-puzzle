@@ -70,13 +70,6 @@ def render_state(puzzle, suffix):
 
     pi = math.pi;
     cam_ob.rotation_mode = 'XYZ'
-    ##pos cam 1
-    #cam_ob.location = 7.3589, -6.9258, 4.9583
-    #cam_ob.rotation_euler = 63.6*pi/180, 0*pi/180, 46.7*pi/180
-    ##pos cam 2
-    #cam_ob.location = 4.6027, 10.459, 6.329
-    #cam_ob.rotation_euler = 63.6*pi/180, -0.394*pi/180, -201*pi/180
-    ##pos cam 3
     cam_ob.location = -3.6678, -5.5478, 6.0441
     cam_ob.rotation_euler = 64.5*pi/180, -2.9*pi/180, -397*pi/180
 
@@ -84,7 +77,7 @@ def render_state(puzzle, suffix):
     light_data = bpy.data.lights.new("MyLight", 'POINT')
     light_ob = bpy.data.objects.new(name="MyLight", object_data=light_data)
     scene.collection.objects.link(light_ob)
-    light_ob.location = -3.0447, -2.5547, 2.6529
+    light_ob.location = -3.0447, -2.5547, 6.6529
     light_ob.rotation_euler = 37.3, 3.16, 107
     light_ob.data.energy = 200
     light_ob.data.color= (1,1,1)
@@ -93,7 +86,7 @@ def render_state(puzzle, suffix):
     light_data2 = bpy.data.lights.new("MyLight2", 'POINT')
     light_ob2 = bpy.data.objects.new(name="MyLight2", object_data=light_data2)
     scene.collection.objects.link(light_ob2)
-    light_ob2.location = 2.0506, -3.9892, 1.4709
+    light_ob2.location = 2.0506, -3.9892, 6.4709
     light_ob2.rotation_euler = 37.3, 3.16, 107
     light_ob2.data.energy = 200
     light_ob2.data.color= (1,1,1)
