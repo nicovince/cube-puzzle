@@ -11,6 +11,7 @@ import logging
 import time
 import cProfile
 import piece
+from coords import Coords3D
 
 def piece_collides_with_others(one, others):
     """Check if a piece collides with list of other pieces (not colliding with each others)"""
@@ -90,8 +91,8 @@ def backtrack(puzzle, unused_pieces):
         backtrack(puzzle, unused_pieces)
 
 
-def solve_puzzle():
-    """Solve cube puzzle."""
+def mount_puzzle():
+    """Mount cube puzzle."""
     unused_pieces = piece.get_pieces5()
     puzzle = []
 
@@ -121,9 +122,31 @@ def solve_puzzle():
         print(f"{p!r}")
 
 
+def umount_puzzle():
+    """Remove pieces of puzzle without collision."""
+    puzzle = piece.get_result()
+    # Move pieces away from origin so they stay in positive coords when being
+    # translated to get out of the mounted puzzle.
+    for p in puzzle:
+        p.translate(Coords3D(5, 5, 5))
+
+
+def solve_puzzle(action):
+    """Solve Puzzle.
+
+    action: mount or umount
+    """
+    if action == "mount":
+        mount_puzzle()
+    else:
+        umount_puzzle()
+
+
 def main():
     """Entry point"""
     parser = argparse.ArgumentParser(prog="solve", description="Solve Cube Puzzle")
+    parser.add_argument("--action", default="umount", choices=["mount", "umount"],
+                        help="Solving action to perform.")
     parser.add_argument("--loglevel",
                         default='warning',
                         help='Provide logging level. Example --loglevel debug, default=warning')
@@ -135,9 +158,9 @@ def main():
     logging.basicConfig(level=args.loglevel.upper())
 
     if args.cprof:
-        cProfile.run('solve_puzzle()')
+        cProfile.run(f"solve_puzzle({args.action})")
     else:
-        solve_puzzle()
+        solve_puzzle(args.action)
 
 if __name__ == "__main__":
     main()
