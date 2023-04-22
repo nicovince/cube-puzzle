@@ -154,6 +154,7 @@ class Piece5:
         self.iterator = None
         self.np_blbe = None
         self.umount_trans_history = []
+        self.trans_hist_archive = []
         self.compute_np()
 
     def __repr__(self):
@@ -187,6 +188,10 @@ class Piece5:
         if len(self.umount_trans_history):
             return self.umount_trans_history[-1]
         return None
+
+    def archive_history(self):
+        self.trans_hist_archive.append(copy.deepcopy(self.umount_trans_history))
+        self.umount_trans_history.clear()
 
     def is_valid(self):
         """Check wether the current positions of blocks and beams are valid."""

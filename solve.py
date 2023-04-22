@@ -169,13 +169,15 @@ def move_puzzle_piece(puzzle, piece):
 def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
     """Move a piece of the puzzle, and remove it if outside of puzzle."""
     rm_piece = None
+    trans = None
     null_trans = Coords3D(0, 0, 0)
     for p in puzzle:
         logging.debug("%s trans history: %s", p.name, p.umount_trans_history)
         while True:
             trans = move_puzzle_piece(puzzle, p)
             if trans == null_trans:
-                logging.debug("%s could not move further", p.name)
+                logging.debug("%s could not be moved", p.name)
+                trans = None
                 break
             logging.info("Moved %s %s", p.name, trans)
             p.add_trans_history(trans)
@@ -191,6 +193,10 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
             break
     if rm_piece is not None:
         puzzle.remove(rm_piece)
+    if trans is None:
+        logging.info("Could not move anything, Archive translation history.")
+        for p in puzzle:
+            p.archive_history()
 
 def umount_puzzle():
     """Remove pieces of puzzle without collision."""
@@ -210,7 +216,7 @@ def umount_puzzle():
     pieces_out = []
     while len(puzzle) > 1:
         unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
-    print("Done")
+    print("Et voila !")
 
 
 def solve_puzzle(action):
