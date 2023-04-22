@@ -15,24 +15,13 @@ import numpy as np
 def color(r, g, b):
     return (r/255, g/255, b/255, 1)
 
-def render_state(puzzle, suffix):
-    save_blend = False
-    filepath = os.getcwd()
-    png_filename = f"{filepath}/puzzle_state{suffix}.png"
 
-    # Clear existing objects.
-    bpy.ops.wm.read_factory_settings(use_empty=True)
-
-    scene = bpy.context.scene
-
-    #set transparent background
-    scene.render.film_transparent = True
-
-
+def get_piece_colors(piece):
+    p_idx = int(piece.name[1]) - 1
     cube_colors = []
     beam_colors = []
-    cube_colors.append(color(72, 50, 193))
-    beam_colors.append(color(126, 224, 152))
+    cube_colors.append(color(68, 168, 52))
+    beam_colors.append(color(146, 214, 135))
 
     cube_colors.append(color(168, 80, 72))
     beam_colors.append(color(235, 142, 134))
@@ -54,13 +43,29 @@ def render_state(puzzle, suffix):
 
     cube_colors.append(color(137, 89, 189))
     beam_colors.append(color(176, 136, 219))
+    return (cube_colors[p_idx], beam_colors[p_idx])
+
+
+def render_state(puzzle, suffix):
+    save_blend = False
+    filepath = os.getcwd()
+    png_filename = f"{filepath}/puzzle_state{suffix}.png"
+
+    # Clear existing objects.
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+
+    scene = bpy.context.scene
+
+    #set transparent background
+    scene.render.film_transparent = True
+
 
     size = 0.2
     coord = 2*size
     i = 0
     for p in puzzle:
         p_idx = int(p.name[1]) - 1
-        cubecolor = cube_colors[p_idx]
+        cubecolor, beamcolor = get_piece_colors(p)
         mat = bpy.data.materials.new("cubecolor")
         mat.diffuse_color = cubecolor
         for block in p.blocks:
@@ -77,7 +82,6 @@ def render_state(puzzle, suffix):
         i = 0
         sizeb=0.2
         coordb = 2*sizeb
-        beamcolor = beam_colors[p_idx]
         mat2 = bpy.data.materials.new("beamcolor")
         mat2.diffuse_color = beamcolor
         for beam in p.beams:
@@ -157,6 +161,8 @@ def render_piece(mypiece, suffix, save_blend=False):
     coord = 2*size
     i = 0
     cubecolor=204/255,170/255,155/255,1
+    beamcolor=89/255,71/255,53/255,1
+    cubecolor, beamcolor = get_piece_colors(mypiece)
     mat = bpy.data.materials.new("cubecolor")
     mat.diffuse_color = cubecolor
 
@@ -176,7 +182,6 @@ def render_piece(mypiece, suffix, save_blend=False):
     i = 0
     sizeb=0.2
     coordb = 2*sizeb
-    beamcolor=89/255,71/255,53/255,1
     mat2 = bpy.data.materials.new("beamcolor")
     mat2.diffuse_color = beamcolor
     Be = np.zeros((5,5,5), dtype = int)
