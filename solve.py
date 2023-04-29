@@ -167,6 +167,21 @@ def move_puzzle_piece(puzzle, piece):
     return trans * trans_cnt
 
 
+def try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
+    """Try to remove pieces from puzzle which are out of the puzzle bounding box."""
+
+    for p in puzzle:
+        blks_union = p.np_blbe & puzzle_bb_np
+        if np.amax(blks_union) == 0:
+            print(f"{p.name} is out of puzzle")
+            pieces_out.append(p)
+            rm_piece = p
+            puzzle.remove(p)
+            return True
+    return False
+
+
+
 def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
     """Move a piece of the puzzle, and remove it if outside of puzzle."""
     rm_piece = None
@@ -182,17 +197,10 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
                 break
             logging.info("Moved %s %s", p.name, trans)
             p.add_trans_history(trans)
-            # Check piece is out of the puzzle for good
-            blks_union = p.np_blbe & puzzle_bb_np
-            if np.amax(blks_union) == 0:
-                print(f"{p.name} is out of puzzle")
-                pieces_out.append(p)
-                rm_piece = p
-                break
             if trans is not None:
                 break
         logging.debug("Processed %s", p.name)
-        if rm_piece is not None or trans is not None:
+        if trans is not None:
             break
     if rm_piece is not None:
         puzzle.remove(rm_piece)
@@ -221,6 +229,9 @@ def umount_puzzle():
     while len(puzzle) > 1:
         unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
         steps.append(copy.deepcopy(puzzle))
+        if try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
+            steps.append(copy.deepcopy(puzzle))
+
     print("Et voila !")
     return steps
 
