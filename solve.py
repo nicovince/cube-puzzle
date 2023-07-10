@@ -26,6 +26,8 @@ def piece_collides_with_others(one, others):
 def np_check_collision(pce, puzzle):
     """Compute numpy representation and check collision with the rest of the puzzle."""
     pce.compute_np(15)
+    for p in puzzle:
+        p.compute_np(15)
     return piece_collides_with_others(pce, puzzle)
 
 
