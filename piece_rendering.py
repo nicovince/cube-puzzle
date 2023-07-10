@@ -50,6 +50,7 @@ def render_state(puzzle, suffix):
     save_blend = False
     filepath = os.getcwd()
     png_filename = f"{filepath}/puzzle_state{suffix}.png"
+    blend_filename = f"{filepath}/puzzle_state{suffix}.blend"
 
     # Clear existing objects.
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -104,7 +105,7 @@ def render_state(puzzle, suffix):
 
     pi = math.pi;
     cam_ob.rotation_mode = 'XYZ'
-    cam_ob.location = -3.6678, -5.5478, 6.0441
+    cam_ob.location = -3.6678, -5.5478, 7.5656
     cam_ob.rotation_euler = 64.5*pi/180, -2.9*pi/180, -397*pi/180
 
     # Light
