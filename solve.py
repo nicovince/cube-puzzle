@@ -183,8 +183,7 @@ def try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
 
 
 def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
-    """Move a piece of the puzzle, and remove it if outside of puzzle."""
-    rm_piece = None
+    """Move a piece of the puzzle."""
     trans = None
     null_trans = Coords3D(0, 0, 0)
     for p in puzzle:
@@ -202,8 +201,6 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
         logging.debug("Processed %s", p.name)
         if trans is not None:
             break
-    if rm_piece is not None:
-        puzzle.remove(rm_piece)
     if trans is None:
         logging.info("Could not move anything, Archive translation history.")
         for p in puzzle:
