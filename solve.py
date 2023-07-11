@@ -15,6 +15,8 @@ import numpy as np
 import piece
 from coords import Coords3D
 
+solve_grid_dim = 25
+
 def piece_collides_with_others(one, others):
     """Check if a piece collides with list of other pieces (not colliding with each others)"""
     for other_piece in others:
@@ -25,9 +27,9 @@ def piece_collides_with_others(one, others):
 
 def np_check_collision(pce, puzzle):
     """Compute numpy representation and check collision with the rest of the puzzle."""
-    pce.compute_np(15)
+    pce.compute_np(solve_grid_dim)
     for p in puzzle:
-        p.compute_np(15)
+        p.compute_np(solve_grid_dim)
     return piece_collides_with_others(pce, puzzle)
 
 
@@ -146,7 +148,7 @@ def move_puzzle_piece(puzzle, piece):
     movements = [Coords3D(1, 0, 0), Coords3D(0, 1, 0), Coords3D(0, 0, 1),
                  Coords3D(-1, 0, 0), Coords3D(0, -1, 0), Coords3D(0, 0, -1)]
     bb_start = Coords3D(0, 0, 0)
-    bb_end = Coords3D(14, 14, 14)
+    bb_end = Coords3D(solve_grid_dim - 1, solve_grid_dim - 1, solve_grid_dim - 1)
     last_trans = piece.get_last_trans()
     if last_trans is not None:
         logging.debug("%s last trans %s, remove %s for possible movements",
@@ -215,16 +217,17 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
 def umount_puzzle():
     """Remove pieces of puzzle without collision."""
     puzzle = piece.get_result()
+    shift = int((solve_grid_dim - 5) / 2)
     # Move pieces away from origin so they stay in positive coords when being
     # translated to get out of the mounted puzzle.
     for p in puzzle:
-        p.translate(Coords3D(5, 5, 5))
-        p.compute_np(15)
+        p.translate(Coords3D(shift, shift, shift))
+        p.compute_np(solve_grid_dim)
 
-    puzzle_bb_np = np.zeros((15, 15, 15), dtype=int)
-    for x in range(5, 10):
-        for y in range(5, 10):
-            for z in range(5, 10):
+    puzzle_bb_np = np.zeros((solve_grid_dim, solve_grid_dim, solve_grid_dim), dtype=int)
+    for x in range(shift, shift + 5):
+        for y in range(shift, shift + 5):
+            for z in range(shift, shift + 5):
                 puzzle_bb_np[x, y, z] = 1
 
     pieces_out = []
