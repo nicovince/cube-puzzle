@@ -166,7 +166,7 @@ def move_puzzle_piece(puzzle, piece):
         if trans_cnt != 0:
             break
     puzzle.insert(p_idx, piece)
-    return trans * trans_cnt
+    return trans, trans_cnt
 
 
 def try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
@@ -187,11 +187,13 @@ def try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
 def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
     """Move a piece of the puzzle."""
     trans = None
+    piece_moved = None
     null_trans = Coords3D(0, 0, 0)
     for p in puzzle:
         logging.debug("%s trans history: %s", p.name, p.umount_trans_history)
         while True:
-            trans = move_puzzle_piece(puzzle, p)
+            unit_dir, trans_cnt = move_puzzle_piece(puzzle, p)
+            trans = unit_dir * trans_cnt
             if trans == null_trans:
                 logging.debug("%s could not be moved", p.name)
                 trans = None
@@ -199,6 +201,7 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
             logging.info("Moved %s %s", p.name, trans)
             p.add_trans_history(trans)
             if trans is not None:
+                piece_moved = p
                 break
         logging.debug("Processed %s", p.name)
         if trans is not None:
@@ -207,6 +210,7 @@ def unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np):
         logging.info("Could not move anything, Archive translation history.")
         for p in puzzle:
             p.archive_history()
+    return unit_dir, trans_cnt, piece_moved
 
 def umount_puzzle():
     """Remove pieces of puzzle without collision."""
@@ -226,8 +230,11 @@ def umount_puzzle():
     pieces_out = []
     steps = []
     while len(puzzle) > 1:
-        unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
-        steps.append(copy.deepcopy(puzzle))
+        unit_dir, trans_cnt, piece_moved = unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
+        piece_moved.translate(-unit_dir * trans_cnt)
+        for _ in range(trans_cnt):
+            piece_moved.translate(unit_dir)
+            steps.append(copy.deepcopy(puzzle))
         if try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
             steps.append(copy.deepcopy(puzzle))
 
