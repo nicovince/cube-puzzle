@@ -175,6 +175,7 @@ def try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
     """Try to remove pieces from puzzle which are out of the puzzle bounding box."""
 
     for p in puzzle:
+        p.compute_np(solve_grid_dim)
         blks_union = p.np_blbe & puzzle_bb_np
         if np.amax(blks_union) == 0:
             print(f"{p.name} is out of puzzle")
