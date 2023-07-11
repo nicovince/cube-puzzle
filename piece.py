@@ -80,7 +80,7 @@ class Block:
         return self.pos.get_bb_vect(bb_len)
 
     def compute_np(self, dim=5):
-        """Compute numpy array to rerpesent piece and check collision."""
+        """Compute numpy array to represent piece and check collision."""
         self.np_pos = np.zeros((dim, dim, dim), dtype=int)
         self.np_pos[self.pos.x, self.pos.y, self.pos.z] = 1
 
