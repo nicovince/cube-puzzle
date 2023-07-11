@@ -112,7 +112,7 @@ def render_state(puzzle, suffix):
     light_data = bpy.data.lights.new("MyLight", 'POINT')
     light_ob = bpy.data.objects.new(name="MyLight", object_data=light_data)
     scene.collection.objects.link(light_ob)
-    light_ob.location = -3.0447, -2.5547, 6.6529
+    light_ob.location = -3.0716, 8.1817, 6.4709
     light_ob.rotation_euler = 37.3, 3.16, 107
     light_ob.data.energy = 200
     light_ob.data.color= (1,1,1)
@@ -121,10 +121,19 @@ def render_state(puzzle, suffix):
     light_data2 = bpy.data.lights.new("MyLight2", 'POINT')
     light_ob2 = bpy.data.objects.new(name="MyLight2", object_data=light_data2)
     scene.collection.objects.link(light_ob2)
-    light_ob2.location = 2.0506, -3.9892, 6.4709
+    light_ob2.location = 1.6804, -2.5547, 3.2763
     light_ob2.rotation_euler = 37.3, 3.16, 107
     light_ob2.data.energy = 200
     light_ob2.data.color= (1,1,1)
+
+
+    light_data3 = bpy.data.lights.new("MyLight3", 'POINT')
+    light_ob3 = bpy.data.objects.new(name="MyLight3", object_data=light_data3)
+    scene.collection.objects.link(light_ob3)
+    light_ob3.location = 6.9779, 5.1226, 8.701
+    light_ob3.rotation_euler = 37.3, 3.16, 107
+    light_ob3.data.energy = 200
+    light_ob3.data.color= (1,1,1)
 
     ## set invisible plane (shadow catcher)
     #invisibleGround(shadowBrightness=0.9)
