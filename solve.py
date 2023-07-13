@@ -16,6 +16,7 @@ import piece
 from coords import Coords3D
 
 solve_grid_dim = 25
+relax = False
 
 def piece_collides_with_others(one, others):
     """Check if a piece collides with list of other pieces (not colliding with each others)"""
@@ -142,6 +143,7 @@ def move_puzzle_piece(puzzle, piece):
 
     Return Movement vector
     """
+    global relax
     p_idx = puzzle.index(piece)
     # Remove piece of puzzle temporary to check collision with the rest
     puzzle.remove(piece)
@@ -166,7 +168,15 @@ def move_puzzle_piece(puzzle, piece):
         # Revert last translation as it caused the piece to collide or move out of the bounding box
         piece.translate(-m)
         if trans_cnt != 0:
-            break
+            if relax == False:
+                if trans_cnt % 2 == 0:
+                    break
+                else:
+                    piece.translate(-m)
+                    trans_cnt -= 1
+            else:
+                #relax = False
+                break
     puzzle.insert(p_idx, piece)
     return trans, trans_cnt
 
@@ -233,16 +243,29 @@ def umount_puzzle():
 
     pieces_out = []
     steps = []
+    cnt = 0
     while len(puzzle) > 1:
         unit_dir, trans_cnt, piece_moved = unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
-        piece_moved.translate(-unit_dir * trans_cnt)
-        for _ in range(trans_cnt):
-            piece_moved.translate(unit_dir)
-            steps.append(copy.deepcopy(puzzle))
-        if try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
-            steps.append(copy.deepcopy(puzzle))
+        if piece_moved is not None:
+            piece_moved.translate(-unit_dir * trans_cnt)
+            for _ in range(trans_cnt):
+                piece_moved.translate(unit_dir)
+                steps.append(copy.deepcopy(puzzle))
+            if try_remove_piece(puzzle, pieces_out, puzzle_bb_np):
+                steps.append(copy.deepcopy(puzzle))
+        else:
+            cnt += 1
+            global relax
+            if cnt % 4 == 0:
+                print("Relaxing translation constraint")
+                relax = True
+            if cnt == 20:
+                break
 
-    print("Et voila !")
+    if len(puzzle) > 1:
+        print("damn")
+    else:
+        print(f"Et voila ! ({len(steps)} states)")
     return steps
 
 
@@ -251,6 +274,8 @@ def solve_puzzle(action):
 
     action: mount or umount
     """
+    global relax
+    relax = False
     if action == "mount":
         mount_puzzle()
     else:
