@@ -49,8 +49,8 @@ def get_piece_colors(piece):
 def render_state(puzzle, suffix):
     save_blend = True
     filepath = os.getcwd()
-    png_filename = f"{filepath}/puzzle_state{suffix}.png"
-    blend_filename = f"{filepath}/puzzle_state{suffix}.blend"
+    png_filename = f"{filepath}/puzzle_state{suffix:02d}.png"
+    blend_filename = f"{filepath}/puzzle_state{suffix:02d}.blend"
 
     # Clear existing objects.
     bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -285,22 +285,13 @@ def invisibleGround(location = (0,0,0), groundSize = 100, shadowBrightness = 0.7
 
 
 def main():
-    i = 0
     states = solve.umount_puzzle()
-    for state in states:
+    for (state, i) in zip(states, range(len(states))):
         render_state(state, i)
-        i += 1
 
     pieces = piece.get_result()
-    i = 0
     for p in pieces:
+        i = p.name[1]
         render_piece(p, i)
-        pos_idx = 0
-        #for p_pos in piece.PiecePositions(p):
-        #    render_piece(p_pos, f"{i}_{pos_idx}")
-        #    pos_idx = pos_idx + 1
-        i = i + 1
-
-
 
 main()
