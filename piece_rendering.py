@@ -17,7 +17,7 @@ def color(r, g, b):
 
 
 def get_piece_colors(piece):
-    p_idx = int(piece.name[1]) - 1
+    p_idx = int(piece.name[1])
     cube_colors = []
     beam_colors = []
     cube_colors.append(color(68, 168, 52))
