@@ -238,6 +238,7 @@ def umount_puzzle():
     pieces_out = []
     steps = []
     cnt = 0
+    steps.append(copy.deepcopy(puzzle))
     while len(puzzle) > 1:
         unit_dir, trans_cnt, piece_moved = unmount_puzzle_step(puzzle, pieces_out, puzzle_bb_np)
         if piece_moved is not None:
@@ -252,8 +253,12 @@ def umount_puzzle():
             if cnt % 2 == 0:
                 p = puzzle[0]
                 pieces_out.append(p)
+                # adds extra steps to view the piece vanish
+                steps.append(copy.deepcopy(puzzle))
+                steps.append(copy.deepcopy(puzzle))
                 puzzle.remove(p)
                 print(f"Force remove {p.name}")
+                steps.append(copy.deepcopy(puzzle))
                 steps.append(copy.deepcopy(puzzle))
             if cnt == 20:
                 break
