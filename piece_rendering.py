@@ -1,6 +1,8 @@
-#To be called with 
+#To be called with
 # 'blender --background --python piece_rendering.py'
 # will render all pieces in separate files
+# Create movie out of png files:
+# ffmpeg -framerate 4 -pattern_type glob -i 'puzzle_state*.png' -c:v libx264 -pix_fmt yuv420p out.mp4
 
 import bpy
 import os
