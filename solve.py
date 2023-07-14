@@ -16,7 +16,6 @@ import piece
 from coords import Coords3D
 
 solve_grid_dim = 25
-relax = False
 
 def piece_collides_with_others(one, others):
     """Check if a piece collides with list of other pieces (not colliding with each others)"""
@@ -143,7 +142,6 @@ def move_puzzle_piece(puzzle, piece):
 
     Return Movement vector
     """
-    global relax
     p_idx = puzzle.index(piece)
     # Remove piece of puzzle temporary to check collision with the rest
     puzzle.remove(piece)
@@ -168,15 +166,11 @@ def move_puzzle_piece(puzzle, piece):
         # Revert last translation as it caused the piece to collide or move out of the bounding box
         piece.translate(-m)
         if trans_cnt != 0:
-            if relax == False:
-                if trans_cnt % 2 == 0:
-                    break
-                else:
-                    piece.translate(-m)
-                    trans_cnt -= 1
-            else:
-                #relax = False
+            if trans_cnt % 2 == 0:
                 break
+            else:
+                piece.translate(-m)
+                trans_cnt -= 1
     puzzle.insert(p_idx, piece)
     return trans, trans_cnt
 
@@ -255,10 +249,12 @@ def umount_puzzle():
                 steps.append(copy.deepcopy(puzzle))
         else:
             cnt += 1
-            global relax
-            if cnt % 4 == 0:
-                print("Relaxing translation constraint")
-                relax = True
+            if cnt % 2 == 0:
+                p = puzzle[0]
+                pieces_out.append(p)
+                puzzle.remove(p)
+                print(f"Force remove {p.name}")
+                steps.append(copy.deepcopy(puzzle))
             if cnt == 20:
                 break
 
